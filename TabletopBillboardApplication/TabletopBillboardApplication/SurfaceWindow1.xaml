@@ -5,6 +5,5 @@
     Title="TabletopBillboardApplication"
     >
   <Grid>
-
-  </Grid>
+    </Grid>
 </s:SurfaceWindow>
