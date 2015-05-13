@@ -51,7 +51,3 @@ Before `push` to **develop**:
 4. `checkout` **develop** and `merge` with your **feature/bug** branch.
 5. `push` to **develop**.
 6. Only `push` to **master** when having stable working builds (they should pass all tests).
-
-## Code style guidelines
-
-See <https://source.android.com/source/code-style.html>.
