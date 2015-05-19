@@ -15,6 +15,7 @@ using Microsoft.Surface;
 using Microsoft.Surface.Presentation;
 using Microsoft.Surface.Presentation.Controls;
 using Microsoft.Surface.Presentation.Input;
+using System.IO;
 
 namespace TabletopBillboardApplication
 {
@@ -26,12 +27,24 @@ namespace TabletopBillboardApplication
         /// <summary>
         /// Default constructor.
         /// </summary>
+        private Random rnd;
+        private ScatterViewItem svi;
         public SurfaceWindow1()
         {
             InitializeComponent();
 
             // Add handlers for window availability events
             AddWindowAvailabilityHandlers();
+            
+            rnd = new Random();
+            // load image
+            LoadImages();
+
+            foreach (object obj in scatter.Items)
+            {
+                ScatterViewItem svi = scatter.ItemContainerGenerator.ContainerFromItem(obj) as ScatterViewItem;
+            }
+
         }
 
         /// <summary>
@@ -45,6 +58,8 @@ namespace TabletopBillboardApplication
             // Remove handlers for window availability events
             RemoveWindowAvailabilityHandlers();
         }
+
+        //void c_contentHolder_
 
         /// <summary>
         /// Adds handlers for window availability events.
@@ -98,6 +113,25 @@ namespace TabletopBillboardApplication
         private void OnWindowUnavailable(object sender, EventArgs e)
         {
             //TODO: disable audio, animations here
+        }
+        
+        // load images from source
+        void LoadImages()
+        {
+            string envDir = Environment.CurrentDirectory;
+            string[] fileNames = Directory.GetFiles(envDir+@"\Resources", "*.jpg");
+            foreach (string name in fileNames)
+            {
+                Image img = new Image();
+                img.Source = new BitmapImage(new Uri(name, UriKind.Absolute));
+                // create random size for image
+                int dice = rnd.Next(1, 6);
+                svi = new ScatterViewItem();
+                svi.Content = img;
+                svi.Width = 100*dice;
+                svi.Height = 100*dice;
+                scatter.Items.Add(svi);
+            }
         }
     }
 }
