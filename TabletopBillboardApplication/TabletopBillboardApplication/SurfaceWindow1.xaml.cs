@@ -119,7 +119,7 @@ namespace TabletopBillboardApplication
         void LoadImages()
         {
             string envDir = Environment.CurrentDirectory;
-            string[] fileNames = Directory.GetFiles(envDir+@"\Resources", "*.jpg");
+            string[] fileNames = Directory.GetFiles(envDir+@"\Resources\Posters", "*.jpg");
             foreach (string name in fileNames)
             {
                 Image img = new Image();
@@ -128,9 +128,31 @@ namespace TabletopBillboardApplication
                 int dice = rnd.Next(1, 6);
                 svi = new ScatterViewItem();
                 svi.Content = img;
+                int scale = (int) (100 * (img.Source.Height) / img.Source.Width);
                 svi.Width = 100*dice;
-                svi.Height = 100*dice;
+                svi.Height = scale*dice;
+                //svi.Width = img.Source.Height * dice; // Way too large
+                //svi.Height = img.Source.Width * dice; // Way too large
+
                 scatter.Items.Add(svi);
+            }
+        }
+
+        // load text from source
+        void LoadText()
+        {
+            try
+            {
+                using (StreamReader sr = new StreamReader("A3 euromath poster.txt"))
+                {
+                    String line = sr.ReadToEnd();
+                    Console.WriteLine(line);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("The file could not be read:");
+                Console.WriteLine(e.Message);
             }
         }
     }

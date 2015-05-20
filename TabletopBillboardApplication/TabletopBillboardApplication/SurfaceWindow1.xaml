@@ -3,20 +3,23 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:s="http://schemas.microsoft.com/surface/2008"
     Title="TabletopBillboardApplication"
+    WindowState="Maximized"
+    WindowStyle="None"
     >
+    <!-- Height="700" Width="1280" -->
     <s:SurfaceScrollViewer HorizontalScrollBarVisibility="Auto">
         <s:ScatterView x:Name="scatter" 
-                Height="2000" Width="2000" 
-                BorderBrush="Yellow" BorderThickness="3">
-            <!--
+                
+                BorderBrush="PapayaWhip" BorderThickness="3">
+            <!-- 
             <s:ScatterView.ItemContainerStyle>
                 <Style TargetType="{x:Type s:ScatterViewItem}">
                     <Setter Property="Width" Value="100"/>
                     <Setter Property="Height" Value="100"/>
                 </Style>
             </s:ScatterView.ItemContainerStyle>
-            
-
+            -->
+            <!--
             <s:ScatterView.ItemTemplate>
                 <DataTemplate>
                   <Grid>
