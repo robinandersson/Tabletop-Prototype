@@ -1,0 +1,30 @@
+First image
+01/08/2008
+Tag1
+tag2
+tag3
+tag4
+$
+Text
+$
+Second image
+01/08/2008
+Tag1
+tag2
+tag3
+$
+Text
+$
+Third image
+01/08/2008
+Tag1
+tag2
+$
+Text
+$
+Fourth image
+01/08/2008
+Tag1
+$
+Text
+$

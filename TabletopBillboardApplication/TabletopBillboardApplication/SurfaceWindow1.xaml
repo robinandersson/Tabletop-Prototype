@@ -8,9 +8,9 @@
     >
     <!-- Height="700" Width="1280" -->
     <s:SurfaceScrollViewer HorizontalScrollBarVisibility="Auto">
-        <s:ScatterView x:Name="scatter" 
-                
+        <s:ScatterView x:Name="scatter"
                 BorderBrush="PapayaWhip" BorderThickness="3">
+
             <!-- 
             <s:ScatterView.ItemContainerStyle>
                 <Style TargetType="{x:Type s:ScatterViewItem}">
