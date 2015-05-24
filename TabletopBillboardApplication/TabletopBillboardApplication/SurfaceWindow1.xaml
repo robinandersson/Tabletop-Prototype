@@ -7,10 +7,11 @@
     WindowStyle="None"
     >
     <!-- Height="700" Width="1280" -->
-    <s:SurfaceScrollViewer HorizontalScrollBarVisibility="Auto">
+    <!--<s:SurfaceScrollViewer HorizontalScrollBarVisibility="Auto">
         <s:ScatterView x:Name="scatter"
                 BorderBrush="PapayaWhip" BorderThickness="3">
 
         </s:ScatterView>
-    </s:SurfaceScrollViewer>
+    </s:SurfaceScrollViewer>-->
+    <ContentControl x:Name="screenHolder" />
 </s:SurfaceWindow>

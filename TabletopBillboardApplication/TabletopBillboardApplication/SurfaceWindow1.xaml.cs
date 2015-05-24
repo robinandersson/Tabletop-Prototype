@@ -29,12 +29,17 @@ namespace TabletopBillboardApplication
         /// </summary>
         private Random rnd;
         private ScatterViewItem svi;
+        private ScatterView scatter;
         public SurfaceWindow1()
         {
             InitializeComponent();
 
             // Add handlers for window availability events
             AddWindowAvailabilityHandlers();
+
+            scatter = new ScatterView();
+
+            screenHolder.Content = scatter;
             
             rnd = new Random();
             // load image
