@@ -169,7 +169,18 @@ namespace TabletopBillboardApplication
         void OnPosterClick(object sender, RoutedEventArgs e)
         {
 
-            ScatterViewItem svi = e.Source as ScatterViewItem; ;
+            ScatterViewItem svi;
+
+            // Find ScatterViewItem parent of image (object of type System.Windows.Controls.Image returned as source normally)
+            if (e.Source.GetType().Equals(typeof(Image)))
+            {
+                DependencyObject parent = LogicalTreeHelper.GetParent(e.Source as Image);
+                svi = parent as ScatterViewItem;
+            } 
+            else
+            {
+                svi = e.Source as ScatterViewItem;
+            }
 
             if (svi != null)
             {
