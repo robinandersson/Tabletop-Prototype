@@ -182,6 +182,7 @@ namespace TabletopBillboardApplication
                 svi = e.Source as ScatterViewItem;
             }
 
+            // Handle click event
             if (svi != null)
             {
                 Console.WriteLine("Poster clicked");
