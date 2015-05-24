@@ -190,7 +190,19 @@ namespace TabletopBillboardApplication
             // Handle click event
             if (svi != null)
             {
-                Console.WriteLine("Poster clicked");
+
+                // Change screen upon click on poster
+                ScatterView newScatter = new ScatterView();
+
+                ScatterViewItem item = new ScatterViewItem();
+
+                Label label = new Label();
+                label.Content = "New Screen! :D";
+
+                item.Content = label;
+                newScatter.Items.Add(item);
+
+                screenHolder.Content = newScatter;
             }
                     
             return;
