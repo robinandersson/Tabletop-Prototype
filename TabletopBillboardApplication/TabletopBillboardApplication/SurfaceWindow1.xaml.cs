@@ -161,8 +161,23 @@ namespace TabletopBillboardApplication
                 //svi.Height = img.Source.Width * dice; // Way too large
                 //int longestEdge = int (Math.Max(img.Source.Height, img.Source.Width));
 
+                svi.AddHandler(Mouse.MouseDownEvent, new RoutedEventHandler(OnPosterClick), true);
                 scatter.Items.Add(svi);
             }
+        }
+
+        void OnPosterClick(object sender, RoutedEventArgs e)
+        {
+
+            ScatterViewItem svi = e.Source as ScatterViewItem; ;
+
+            if (svi != null)
+            {
+                Console.WriteLine("Poster clicked");
+            }
+                    
+            return;
+
         }
 
         // load text from source
