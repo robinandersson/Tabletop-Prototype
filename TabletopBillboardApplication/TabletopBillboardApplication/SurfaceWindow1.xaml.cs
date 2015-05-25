@@ -42,15 +42,69 @@ namespace TabletopBillboardApplication
             screenHolder.Content = scatter;
             
             rnd = new Random();
+            // load text
+            List<ImageData> data = new List<ImageData>();
+            data = LoadText(data);
+            //List<ImageData> datum = data;
+            //DateTime oldestPoster = getOldestPoster(data);
+            setIndice(data);
             // load image
-            LoadImages();
-            LoadText();
+            LoadImages(data);
 
             foreach (object obj in scatter.Items)
             {
                 ScatterViewItem svi = scatter.ItemContainerGenerator.ContainerFromItem(obj) as ScatterViewItem;
             }
 
+        }
+
+        /*private DateTime getOldestPoster(ImageData[] data)
+        {
+            DateTime oldest = data[0].getDate();
+            int num = 1;
+            while(!data[num].Equals("")){ // need to check this to be sure
+                if (DateTime.Compare(data[num].getDate(),oldest)<0){
+                    oldest = data[num].getDate();
+                }
+            }
+            return oldest;
+        }*/
+
+        private void setIndice(List<ImageData> data)
+        {
+            int num = 0;
+            DateTime today = DateTime.Today;
+            DateTime tempToday = DateTime.Today;
+            int length = data.Count;
+            while (length > num+1){
+                DateTime posterDay = data.ElementAt(num).getDate();
+                int dice = 2; //dice 2, further than a month away
+                int compare = DateTime.Compare(posterDay, today);
+                if (compare == 0) { // posters of today
+                    dice = 6;
+                }
+                else {
+                    if(compare < 0) {   // posters from the past
+                        dice = 1;
+                    }
+                    else {              //dice 4, within 10 days
+                        tempToday = DateTime.Today; 
+                        tempToday = tempToday.AddDays(10);
+                        if (DateTime.Compare(posterDay, tempToday) < 0) {
+                            dice = 4;
+                        }
+                        else {          //dice 3, further than 10 days, but within a month 
+                            tempToday = DateTime.Today;
+                            tempToday = tempToday.AddDays(30);
+                            if (DateTime.Compare(posterDay, tempToday) < 0){
+                                dice = 3;
+                            }
+                        }
+                    }
+                }
+                 data[num].setDice(dice);
+                 num++;
+            }
         }
 
         /// <summary>
@@ -147,28 +201,46 @@ namespace TabletopBillboardApplication
         }
         
         // load images from source
-        void LoadImages()
+        void LoadImages(List<ImageData> data)
         {
             string envDir = Environment.CurrentDirectory;
             string[] fileNames = Directory.GetFiles(envDir+@"\Resources\Posters", "*.jpg");
+            int num2 = 0;
             foreach (string name in fileNames)
             {
                 Image img = new Image();
                 img.Source = new BitmapImage(new Uri(name, UriKind.Absolute));
                 // create random size for image
-                int dice = rnd.Next(1, 6);
+                //int dice = rnd.Next(1, 6);
+                int dice = data.ElementAt(num2).getDice();
+                img.Tag = data.ElementAt(num2);
+                
                 svi = new ScatterViewItem();
                 svi.Content = img;
-                int scale = (int) (100 * (img.Source.Height) / img.Source.Width);
-                svi.Width = 100*dice;
-                svi.Height = scale*dice;
-                //svi.Width = img.Source.Height * dice; // Way too large
-                //svi.Height = img.Source.Width * dice; // Way too large
-                //int longestEdge = int (Math.Max(img.Source.Height, img.Source.Width));
+                
+                /*int scale = (int)(100 * (img.Source.Height) / img.Source.Width);
+                svi.Width = 100 * dice;
+                svi.Height = scale * dice;
+                if (svi.Width > svi.Height)
+                {
+                    scale = (int)(100 * (img.Source.Width) / img.Source.Height);
+                    svi.Height = 100 * dice;
+                    svi.Width = scale * dice;
+                }*/
+                int scale = (int)(100 * (img.Source.Width) / img.Source.Height);
+                svi.Height = 100 * dice;
+                svi.Width = scale * dice;
+                if (svi.Width > svi.Height)
+                {
+                    scale = (int)(100 * (img.Source.Height) / img.Source.Width);
+                    svi.Width = 100 * dice;
+                    svi.Height = scale * dice;
+                }
 
 
                 svi.AddHandler(TouchExtensions.TapGestureEvent, new RoutedEventHandler(OnPosterTap), true);
                 scatter.Items.Add(svi);
+                num2++;
             }
         }
 
@@ -211,24 +283,19 @@ namespace TabletopBillboardApplication
         }
 
         // load text from source
-        void LoadText()
+        private List<ImageData> LoadText(List<ImageData> data)
         {
-
-            // TODO: read it in via Tags class
-            //string envDir = Environment.CurrentDirectory;
-            //string[] fileNames = Directory.GetFiles(envDir + @"\Resources\Posters", "*.jpg");
-            ImageData[] data= null;// = new ImageData();
-            try //TODO
+            try
             {
-                using (StreamReader sr = new StreamReader(@"Resources\Text Posters\TextImage.txt"))
+
+                string path = Environment.CurrentDirectory + @"\Resources\Text Posters\TextImage.txt";
+                using (StreamReader sr = new StreamReader(path))
                 {
                     String name = sr.ReadLine();
-                    int num = 0;
                     while (name != null)
                     {
                         String dat = sr.ReadLine();
-                        DateTime date = Convert.ToDateTime(dat);
-                        int num2 = 0;
+                        DateTime date = DateTime.ParseExact(dat, "dd/MM/yyyy", null);
                         List<String> tag= new List<String>();
                         String tag0 = sr.ReadLine(); 
                         while (tag0 != "$")
@@ -243,8 +310,8 @@ namespace TabletopBillboardApplication
                             line = String.Concat(line,line0);
                             line0 = sr.ReadLine();
                         }
-                        data[num] = new ImageData(name, date, tag, line);
-                        num++;
+                        data.Add(new ImageData(name, date, tag, line));
+                        name = sr.ReadLine();
                     }
                 }
             }
@@ -253,35 +320,49 @@ namespace TabletopBillboardApplication
                 Console.WriteLine("The file could not be read:");
                 Console.WriteLine(e.Message);
             }
+            return data;
         }
 
+        // class to ask for data per image
         private class ImageData
         {
             private List<String> Tags;
             private String Text, Name;
             private DateTime Date;
+            private int Dice = 0;
+
+            //public string Name { get; set; }
+            //public int Age { get; set; }
 
             public ImageData(String Name0, DateTime Date0, List<String> Tags0, String Text0){
                 Name = Name0;
                 Date = Date0;
                 Tags = Tags0;
                 Text = Text0;
+                //Dice = Dice0;
             }
 
-            private string getName(){
+            public string getName(){
                 return Name;
             }
 
-            private DateTime getDate(){
+            public DateTime getDate(){
                 return Date;
             }
 
-            private List<string> getTags(){
+            public List<string> getTags(){
                 return Tags;
             }
 
-            private string getText(){
+            public string getText(){
                 return Text;
+            }
+
+            public int getDice() {
+                return Dice;
+            }
+            public void setDice(int Dice2) {
+                Dice = Dice2;
             }
         }
     }
