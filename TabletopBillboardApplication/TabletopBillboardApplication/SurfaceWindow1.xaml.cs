@@ -71,11 +71,9 @@ namespace TabletopBillboardApplication
             DateTime today = DateTime.Today;
             DateTime tempToday = DateTime.Today;
             int length = data.Count;
-            //int len = data.Length;
-            //int length = data.Length/data.Rank;
-            while (length > num++){ // needs to be checked
-                DateTime posterDay = data[num].getDate();
-                int dice = 3; //dice 3, further than a month away
+            while (length > num+1){
+                DateTime posterDay = data.ElementAt(num).getDate();
+                int dice = 2; //dice 2, further than a month away
                 int compare = DateTime.Compare(posterDay, today);
                 if (compare == 0) { // posters of today
                     dice = 6;
@@ -84,16 +82,17 @@ namespace TabletopBillboardApplication
                     if(compare < 0) {   // posters from the past
                         dice = 1;
                     }
-                    else {              //dice 5, within 10 days
-                        tempToday.AddDays(10);
+                    else {              //dice 4, within 10 days
+                        tempToday = DateTime.Today; 
+                        tempToday = tempToday.AddDays(10);
                         if (DateTime.Compare(posterDay, tempToday) < 0) {
-                            dice = 5;
+                            dice = 4;
                         }
-                        else {          //dice 4, further than 10 days, but within a month 
+                        else {          //dice 3, further than 10 days, but within a month 
                             tempToday = DateTime.Today;
-                            tempToday.AddDays(30);
+                            tempToday = tempToday.AddDays(30);
                             if (DateTime.Compare(posterDay, tempToday) < 0){
-                                dice = 4;
+                                dice = 3;
                             }
                         }
                     }
@@ -201,27 +200,39 @@ namespace TabletopBillboardApplication
         {
             string envDir = Environment.CurrentDirectory;
             string[] fileNames = Directory.GetFiles(envDir+@"\Resources\Posters", "*.jpg");
-            int num = 0;
-            //DateTime today = DateTime.Today;
+            int num2 = 0;
             foreach (string name in fileNames)
             {
                 Image img = new Image();
                 img.Source = new BitmapImage(new Uri(name, UriKind.Absolute));
                 // create random size for image
                 //int dice = rnd.Next(1, 6);
-                int dice = data[num].getDice();
+                int dice = data.ElementAt(num2).getDice();
 
                 svi = new ScatterViewItem();
                 svi.Content = img;
-                int scale = (int) (100 * (img.Source.Height) / img.Source.Width);
-                svi.Width = 100*dice;
+                
+                /*int scale = (int)(100 * (img.Source.Height) / img.Source.Width);
+                svi.Width = 100 * dice;
                 svi.Height = scale * dice;
-                //svi.Width = img.Source.Height * dice; // Way too large
-                //svi.Height = img.Source.Width * dice; // Way too large
-                //int longestEdge = int (Math.Max(img.Source.Height, img.Source.Width));
+                if (svi.Width > svi.Height)
+                {
+                    scale = (int)(100 * (img.Source.Width) / img.Source.Height);
+                    svi.Height = 100 * dice;
+                    svi.Width = scale * dice;
+                }*/
+                int scale = (int)(100 * (img.Source.Width) / img.Source.Height);
+                svi.Height = 100 * dice;
+                svi.Width = scale * dice;
+                if (svi.Width > svi.Height)
+                {
+                    scale = (int)(100 * (img.Source.Height) / img.Source.Width);
+                    svi.Width = 100 * dice;
+                    svi.Height = scale * dice;
+                }
 
                 scatter.Items.Add(svi);
-                num++;
+                num2++;
             }
         }
 
