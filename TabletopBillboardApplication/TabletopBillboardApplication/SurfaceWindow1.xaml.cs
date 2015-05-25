@@ -40,7 +40,7 @@ namespace TabletopBillboardApplication
             // load text
             List<ImageData> data = new List<ImageData>();
             data = LoadText(data);
-            List<ImageData> datum = data;
+            //List<ImageData> datum = data;
             //DateTime oldestPoster = getOldestPoster(data);
             setIndice(data);
             // load image
