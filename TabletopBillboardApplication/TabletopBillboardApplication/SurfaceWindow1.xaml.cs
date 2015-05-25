@@ -242,13 +242,15 @@ namespace TabletopBillboardApplication
         {
             try
             {
-                using (StreamReader sr = new StreamReader(@"Resources\Text Posters\TextImage.txt"))
+
+                string path = Environment.CurrentDirectory + @"\Resources\Text Posters\TextImage.txt";
+                using (StreamReader sr = new StreamReader(path))
                 {
                     String name = sr.ReadLine();
                     while (name != null)
                     {
                         String dat = sr.ReadLine();
-                        DateTime date = Convert.ToDateTime(dat);
+                        DateTime date = DateTime.ParseExact(dat, "dd/MM/yyyy", null);
                         List<String> tag= new List<String>();
                         String tag0 = sr.ReadLine(); 
                         while (tag0 != "$")
