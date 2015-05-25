@@ -208,7 +208,8 @@ namespace TabletopBillboardApplication
                 // create random size for image
                 //int dice = rnd.Next(1, 6);
                 int dice = data.ElementAt(num2).getDice();
-
+                img.Tag = data.ElementAt(num2);
+                
                 svi = new ScatterViewItem();
                 svi.Content = img;
                 
