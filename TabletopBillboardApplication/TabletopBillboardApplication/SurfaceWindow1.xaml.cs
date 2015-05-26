@@ -27,7 +27,6 @@ namespace TabletopBillboardApplication
         /// <summary>
         /// Default constructor.
         /// </summary>
-        private Random rnd;
         private ScatterViewItem svi;
         private ScatterView scatter;
         public SurfaceWindow1()
@@ -41,12 +40,9 @@ namespace TabletopBillboardApplication
 
             screenHolder.Content = scatter;
             
-            rnd = new Random();
             // load text
             List<ImageData> data = new List<ImageData>();
             data = LoadText(data);
-            //List<ImageData> datum = data;
-            //DateTime oldestPoster = getOldestPoster(data);
             setIndice(data);
             // load image
             LoadImages(data);
@@ -57,18 +53,6 @@ namespace TabletopBillboardApplication
             }
 
         }
-
-        /*private DateTime getOldestPoster(ImageData[] data)
-        {
-            DateTime oldest = data[0].getDate();
-            int num = 1;
-            while(!data[num].Equals("")){ // need to check this to be sure
-                if (DateTime.Compare(data[num].getDate(),oldest)<0){
-                    oldest = data[num].getDate();
-                }
-            }
-            return oldest;
-        }*/
 
         private void setIndice(List<ImageData> data)
         {
@@ -210,23 +194,10 @@ namespace TabletopBillboardApplication
             {
                 Image img = new Image();
                 img.Source = new BitmapImage(new Uri(name, UriKind.Absolute));
-                // create random size for image
-                //int dice = rnd.Next(1, 6);
-                int dice = data.ElementAt(num2).getDice();
                 img.Tag = data.ElementAt(num2);
                 
                 svi = new ScatterViewItem();
                 svi.Content = img;
-                
-                /*int scale = (int)(100 * (img.Source.Height) / img.Source.Width);
-                svi.Width = 100 * dice;
-                svi.Height = scale * dice;
-                if (svi.Width > svi.Height)
-                {
-                    scale = (int)(100 * (img.Source.Width) / img.Source.Height);
-                    svi.Height = 100 * dice;
-                    svi.Width = scale * dice;
-                }*/
                 int scale = (int)(100 * (img.Source.Width) / img.Source.Height);
                 svi.Height = 100 * dice;
                 svi.Width = scale * dice;
@@ -236,7 +207,6 @@ namespace TabletopBillboardApplication
                     svi.Width = 100 * dice;
                     svi.Height = scale * dice;
                 }
-
 
                 svi.AddHandler(TouchExtensions.TapGestureEvent, new RoutedEventHandler(OnPosterTap), true);
                 scatter.Items.Add(svi);
@@ -287,7 +257,6 @@ namespace TabletopBillboardApplication
         {
             try
             {
-
                 string path = Environment.CurrentDirectory + @"\Resources\Text Posters\TextImage.txt";
                 using (StreamReader sr = new StreamReader(path))
                 {
@@ -329,17 +298,12 @@ namespace TabletopBillboardApplication
             private List<String> Tags;
             private String Text, Name;
             private DateTime Date;
-            private int Dice = 0;
-
-            //public string Name { get; set; }
-            //public int Age { get; set; }
 
             public ImageData(String Name0, DateTime Date0, List<String> Tags0, String Text0){
                 Name = Name0;
                 Date = Date0;
                 Tags = Tags0;
                 Text = Text0;
-                //Dice = Dice0;
             }
 
             public string getName(){
