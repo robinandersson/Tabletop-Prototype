@@ -41,8 +41,8 @@ namespace TabletopBillboardApplication
             screenHolder.Content = scatter;
             
             // load text
-            List<ImageData> data = new List<ImageData>();
-            data = LoadText(data);
+            List<PosterData> data = new List<PosterData>();
+            LoadText(data);
             setIndice(data);
             // load image
             LoadImages(data);
@@ -54,7 +54,7 @@ namespace TabletopBillboardApplication
 
         }
 
-        private void setIndice(List<ImageData> data)
+        private void setIndice(List<PosterData> data)
         {
             int num = 0;
             DateTime today = DateTime.Today;
@@ -86,7 +86,7 @@ namespace TabletopBillboardApplication
                         }
                     }
                 }
-                 data[num].setDice(dice);
+                 data[num].setSize(dice);
                  num++;
             }
         }
@@ -117,6 +117,7 @@ namespace TabletopBillboardApplication
             //ManipulationDelta += OnManipulationDelta;
         }
 
+        // maximize zooming in
         /*public void OnManipulationDelta(object sender, ManipulationDeltaEventArgs args)
         {
             if (sender.GetType() == typeof(ScatterViewItem))
@@ -185,7 +186,7 @@ namespace TabletopBillboardApplication
         }
         
         // load images from source
-        void LoadImages(List<ImageData> data)
+        void LoadImages(List<PosterData> data)
         {
             string envDir = Environment.CurrentDirectory;
             string[] fileNames = Directory.GetFiles(envDir+@"\Resources\Posters", "*.jpg");
@@ -194,18 +195,19 @@ namespace TabletopBillboardApplication
             {
                 Image img = new Image();
                 img.Source = new BitmapImage(new Uri(name, UriKind.Absolute));
+                int size = data.ElementAt(num2).getSize();
                 img.Tag = data.ElementAt(num2);
-                
+                                
                 svi = new ScatterViewItem();
                 svi.Content = img;
                 int scale = (int)(100 * (img.Source.Width) / img.Source.Height);
-                svi.Height = 100 * dice;
-                svi.Width = scale * dice;
+                svi.Height = 100 * size;
+                svi.Width = scale * size;
                 if (svi.Width > svi.Height)
                 {
                     scale = (int)(100 * (img.Source.Height) / img.Source.Width);
-                    svi.Width = 100 * dice;
-                    svi.Height = scale * dice;
+                    svi.Width = 100 * size;
+                    svi.Height = scale * size;
                 }
 
                 svi.AddHandler(TouchExtensions.TapGestureEvent, new RoutedEventHandler(OnPosterTap), true);
@@ -253,7 +255,7 @@ namespace TabletopBillboardApplication
         }
 
         // load text from source
-        private List<ImageData> LoadText(List<ImageData> data)
+        private List<PosterData> LoadText(List<PosterData> data)
         {
             try
             {
@@ -279,7 +281,7 @@ namespace TabletopBillboardApplication
                             line = String.Concat(line,line0);
                             line0 = sr.ReadLine();
                         }
-                        data.Add(new ImageData(name, date, tag, line));
+                        data.Add(new PosterData(name, date, tag, line));
                         name = sr.ReadLine();
                     }
                 }
@@ -293,40 +295,41 @@ namespace TabletopBillboardApplication
         }
 
         // class to ask for data per image
-        private class ImageData
+        private class PosterData
         {
-            private List<String> Tags;
-            private String Text, Name;
-            private DateTime Date;
+            private List<String> tags;
+            private String text, name;
+            private DateTime date;
+            private int size = 0;
 
-            public ImageData(String Name0, DateTime Date0, List<String> Tags0, String Text0){
-                Name = Name0;
-                Date = Date0;
-                Tags = Tags0;
-                Text = Text0;
+            public PosterData(String name, DateTime date, List<String> tags, String text){
+                this.name = name;
+                this.date = date;
+                this.tags = tags;
+                this.text = text;
             }
 
             public string getName(){
-                return Name;
+                return name;
             }
 
             public DateTime getDate(){
-                return Date;
+                return date;
             }
 
             public List<string> getTags(){
-                return Tags;
+                return tags;
             }
 
             public string getText(){
-                return Text;
+                return text;
             }
 
-            public int getDice() {
-                return Dice;
+            public int getSize() {
+                return size;
             }
-            public void setDice(int Dice2) {
-                Dice = Dice2;
+            public void setSize(int size) {
+                this.size = size;
             }
         }
     }
