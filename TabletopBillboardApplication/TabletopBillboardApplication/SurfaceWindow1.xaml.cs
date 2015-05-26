@@ -43,7 +43,7 @@ namespace TabletopBillboardApplication
             // load text
             List<PosterData> data = new List<PosterData>();
             LoadText(data);
-            setIndice(data);
+            setSize(data);
             // load image
             LoadImages(data);
 
@@ -54,7 +54,7 @@ namespace TabletopBillboardApplication
 
         }
 
-        private void setIndice(List<PosterData> data)
+        private void setSize(List<PosterData> data)
         {
             int num = 0;
             DateTime today = DateTime.Today;
