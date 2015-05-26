@@ -43,7 +43,7 @@ namespace TabletopBillboardApplication
             // load text
             List<EventData> data = new List<EventData>();
             LoadText(data);
-            setIndice(data);
+            setSize(data);
             // load image
             LoadImages(data);
 
@@ -54,7 +54,7 @@ namespace TabletopBillboardApplication
 
         }
 
-        private void setIndice(List<EventData> data)
+        private void setSize(List<EventData> data)
         {
             int num = 0;
             DateTime today = DateTime.Today;
@@ -266,9 +266,9 @@ namespace TabletopBillboardApplication
                     while (name != null)
                     {
                         String dat = sr.ReadLine();
-                        DateTime date = DateTime.ParseExact(dat, "dd/MM/yyyy", null);
+                        DateTime date = DateTime.ParseExact(dat, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
                         List<String> tag= new List<String>();
-                        String tag0 = sr.ReadLine(); 
+                        String tag0 = sr.ReadLine();
                         while (tag0 != "$")
                         {
                             tag.Add(tag0);
