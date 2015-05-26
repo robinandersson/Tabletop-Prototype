@@ -32,6 +32,9 @@ namespace TabletopBillboardApplication
         public SurfaceWindow1()
         {
             InitializeComponent();
+            ScatterViewItem item = new ScatterViewItem();
+            item.Height = 200;
+            item.Width = 1000;
 
             // Add handlers for window availability events
             AddWindowAvailabilityHandlers();
@@ -40,10 +43,10 @@ namespace TabletopBillboardApplication
             // load image
             LoadImages();
 
-            foreach (object obj in scatter.Items)
-            {
-                ScatterViewItem svi = scatter.ItemContainerGenerator.ContainerFromItem(obj) as ScatterViewItem;
-            }
+           // string envDir = Environment.CurrentDirectory;
+            //string[] fileNames = Directory.GetFiles(envDir + @"\Resources", "*.jpg");
+            //scatter.ItemsSource = fileNames;
+               // Directory.GetFiles(@"C:\Users\Public\Pictures\Sample Pictures", "*.jpg");
 
         }
 
@@ -120,18 +123,136 @@ namespace TabletopBillboardApplication
         {
             string envDir = Environment.CurrentDirectory;
             string[] fileNames = Directory.GetFiles(envDir+@"\Resources", "*.jpg");
+            //scatter.ItemsSource = fileNames;
+            //foreach (object obj in scatter.Items)
+            //{
+            //    ScatterViewItem svi = scatter.ItemContainerGenerator.ContainerFromItem(obj) as ScatterViewItem;
+            //    int dice = rnd.Next(1, 6);
+            //    svi.Width = 100 * dice;
+            //    svi.Height = 100*dice;
+            //    scatter.UpdateLayout();
+            //}
             foreach (string name in fileNames)
             {
                 Image img = new Image();
                 img.Source = new BitmapImage(new Uri(name, UriKind.Absolute));
                 // create random size for image
-                int dice = rnd.Next(1, 6);
+                int dice = rnd.Next(1,6);
+
+                double width = img.Source.Width*dice*0.1;
+                double height = img.Source.Height*dice*0.1;
+                
+                
+                img.Tag = "this image 1";
                 svi = new ScatterViewItem();
+                svi.Width = width;
+                svi.Height = height;
                 svi.Content = img;
-                svi.Width = 100*dice;
-                svi.Height = 100*dice;
+                svi.PreviewTouchDown += new EventHandler<TouchEventArgs>(img_PreviewTouchDown);
                 scatter.Items.Add(svi);
             }
         }
+
+        void img_PreviewTouchDown(object sender, TouchEventArgs e)
+        {
+
+            var element = sender as ContentControl;
+            //sender. = Visibility.Hidden;
+            Double x = 0;
+            Double y = 0;
+            if (element != null)
+            {
+                var location = element.PointToScreen(new Point(0, 0));
+                x = location.X;
+                y = location.Y;
+
+            }
+            ScatterViewItem item = (ScatterViewItem)sender;
+            Image img  = (Image)item.Content;
+            item.Visibility = Visibility.Hidden;
+
+            svi = new ScatterViewItem();
+            //string name = (string)img.Tag;
+            //MessageBox.Show(name);
+            Image img1 = new Image();
+            img1.Source = img.Source.Clone();
+            Canvas can = new Canvas();
+            ImageBrush ib = new ImageBrush();
+            ib.ImageSource = new BitmapImage(new Uri(@"E:\tabletop computing\Tabletop-Prototype\TabletopBillboardApplication\TabletopBillboardApplication\Resources\background\plain-hd-wallpapers.jpg", UriKind.Relative));
+            can.Background = ib;
+            
+            Label lab1 = new Label();
+            lab1.Content = "Description of this image";
+            
+            Canvas.SetRight(img1,20);
+            Canvas.SetLeft(img1, 20);
+            Canvas.SetTop(img1, 20);
+            Canvas.SetBottom(img1, 20);
+            can.Children.Add(img1);
+
+            Canvas.SetRight(lab1, 100);
+            Canvas.SetLeft(lab1, 100);
+            Canvas.SetTop(lab1, 100);
+            Canvas.SetBottom(lab1, 100);
+            can.Children.Add(lab1);
+            can.Width = 500;
+            can.Height = 500;
+            svi.Content = can;
+            svi.Center = new Point(x+100,y+100);
+            //svi.Width = img1.Width;
+            //svi.Height = img1.Height*2;
+
+           
+            scatter.Items.Add(svi);
+           
+            //foreach (Object obj in scatter.Items){
+            //    ScatterViewItem sv = scatter.ItemContainerGenerator.ContainerFromItem(obj) as ScatterViewItem;
+            //    if (sv.Content.GetType().Equals(typeof(Canvas)))
+            //    {
+            //        scatter.Items.RemoveAt(1);
+            //    }
+            //}
+            //scatter.Items.RemoveAt(1);
+        }
+
+        private void OnItemClicked(object sender, RoutedEventArgs e)
+        {
+            // Get the button that was clicked and hide it.
+            Button b = (Button)e.Source as Button;
+            b.Visibility = Visibility.Collapsed;
+
+            // Get the ScatterViewItem control for the clicked button.
+            ScatterViewItem item = (ScatterViewItem)scatter.ContainerFromElement(b);
+
+            // Get the image within the ScatterViewItemcontrol.
+            System.Windows.Controls.ContentPresenter content = FindContentPresenter(item);
+            System.Windows.Controls.Image img =
+             (System.Windows.Controls.Image)content.ContentTemplate.FindName("img", content);
+
+            // Convert the image to grayscale.
+            img.Source = new FormatConvertedBitmap(
+             (BitmapSource)img.Source, PixelFormats.Gray16, BitmapPalettes.Gray16, 0);
+        }
+
+        System.Windows.Controls.ContentPresenter FindContentPresenter(DependencyObject obj)
+        {
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(obj); i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(obj, i);
+                if (child != null && child is System.Windows.Controls.ContentPresenter)
+                {
+                    return (System.Windows.Controls.ContentPresenter)child;
+                }
+                else
+                {
+                    System.Windows.Controls.ContentPresenter childOfChild =
+                        FindContentPresenter(child);
+                    if (childOfChild != null)
+                        return childOfChild;
+                }
+            }
+            return null;
+        }
+
     }
 }
