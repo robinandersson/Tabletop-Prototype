@@ -103,42 +103,42 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="bin\Debug\Resources\Posters\A3 euromath poster.jpg">
+    <Content Include="bin\Debug\Resources\Posters\A3 euromath poster.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="bin\Debug\Resources\Posters\icon.png">
+    </Content>
+    <Content Include="bin\Debug\Resources\Posters\icon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="bin\Debug\Resources\Posters\Jubileums goteborg 1923.jpg">
+    </Content>
+    <Content Include="bin\Debug\Resources\Posters\Jubileums goteborg 1923.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="bin\Debug\Resources\Posters\math eyes.jpg">
+    </Content>
+    <Content Include="bin\Debug\Resources\Posters\math eyes.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="bin\Debug\Resources\Posters\movie 2013.jpg">
+    </Content>
+    <Content Include="bin\Debug\Resources\Posters\movie 2013.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="bin\Debug\Resources\Posters\number.png">
+    </Content>
+    <Content Include="bin\Debug\Resources\Posters\number.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="bin\Debug\Resources\Posters\pict - o -pict.jpg">
+    </Content>
+    <Content Include="bin\Debug\Resources\Posters\pict - o -pict.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="bin\Debug\Resources\Posters\rockfest.jpg">
+    </Content>
+    <Content Include="bin\Debug\Resources\Posters\rockfest.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="bin\Debug\Resources\Posters\sharing.jpg">
+    </Content>
+    <Content Include="bin\Debug\Resources\Posters\sharing.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="bin\Debug\Resources\Posters\startup hack.jpg">
+    </Content>
+    <Content Include="bin\Debug\Resources\Posters\startup hack.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="bin\Debug\Resources\Posters\suit.jpg">
+    </Content>
+    <Content Include="bin\Debug\Resources\Posters\suit.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="bin\Debug\Resources\Posters\Sweden Scenic Waterway.jpg">
+    </Content>
+    <Content Include="bin\Debug\Resources\Posters\Sweden Scenic Waterway.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    </Content>
     <Content Include="Resources\Posters\A3 euromath poster.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
