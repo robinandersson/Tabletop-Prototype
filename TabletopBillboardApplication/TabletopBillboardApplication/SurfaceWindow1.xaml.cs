@@ -41,7 +41,7 @@ namespace TabletopBillboardApplication
             screenHolder.Content = scatter;
             
             // load text
-            List<PosterData> data = new List<PosterData>();
+            List<EventData> data = new List<EventData>();
             LoadText(data);
             setIndice(data);
             // load image
@@ -54,7 +54,7 @@ namespace TabletopBillboardApplication
 
         }
 
-        private void setIndice(List<PosterData> data)
+        private void setIndice(List<EventData> data)
         {
             int num = 0;
             DateTime today = DateTime.Today;
@@ -186,7 +186,7 @@ namespace TabletopBillboardApplication
         }
         
         // load images from source
-        void LoadImages(List<PosterData> data)
+        void LoadImages(List<EventData> data)
         {
             string envDir = Environment.CurrentDirectory;
             string[] fileNames = Directory.GetFiles(envDir+@"\Resources\Posters", "*.jpg");
@@ -255,7 +255,7 @@ namespace TabletopBillboardApplication
         }
 
         // load text from source
-        private List<PosterData> LoadText(List<PosterData> data)
+        private List<EventData> LoadText(List<EventData> data)
         {
             try
             {
@@ -281,7 +281,7 @@ namespace TabletopBillboardApplication
                             line = String.Concat(line,line0);
                             line0 = sr.ReadLine();
                         }
-                        data.Add(new PosterData(name, date, tag, line));
+                        data.Add(new EventData(name, date, tag, line));
                         name = sr.ReadLine();
                     }
                 }
@@ -295,14 +295,14 @@ namespace TabletopBillboardApplication
         }
 
         // class to ask for data per image
-        private class PosterData
+        private class EventData
         {
             private List<String> tags;
             private String text, name;
             private DateTime date;
             private int size = 0;
 
-            public PosterData(String name, DateTime date, List<String> tags, String text){
+            public EventData(String name, DateTime date, List<String> tags, String text){
                 this.name = name;
                 this.date = date;
                 this.tags = tags;
