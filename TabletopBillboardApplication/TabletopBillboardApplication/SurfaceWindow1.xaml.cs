@@ -62,31 +62,31 @@ namespace TabletopBillboardApplication
             int length = data.Count;
             while (length > num+1){
                 DateTime posterDay = data.ElementAt(num).getDate();
-                int dice = 2; //dice 2, further than a month away
+                int size = 2; //dice 2, further than a month away
                 int compare = DateTime.Compare(posterDay, today);
                 if (compare == 0) { // posters of today
-                    dice = 6;
+                    size = 6;
                 }
                 else {
                     if(compare < 0) {   // posters from the past
-                        dice = 1;
+                        size = 1;
                     }
                     else {              //dice 4, within 10 days
                         tempToday = DateTime.Today; 
                         tempToday = tempToday.AddDays(10);
                         if (DateTime.Compare(posterDay, tempToday) < 0) {
-                            dice = 4;
+                            size = 4;
                         }
                         else {          //dice 3, further than 10 days, but within a month 
                             tempToday = DateTime.Today;
                             tempToday = tempToday.AddDays(30);
                             if (DateTime.Compare(posterDay, tempToday) < 0){
-                                dice = 3;
+                                size = 3;
                             }
                         }
                     }
                 }
-                 data[num].setSize(dice);
+                 data[num].setSize(size);
                  num++;
             }
         }
@@ -297,15 +297,15 @@ namespace TabletopBillboardApplication
         // class to ask for data per image
         private class PosterData
         {
-            private List<String> tags;
+            private List<String> type;
             private String text, name;
             private DateTime date;
             private int size = 0;
 
-            public PosterData(String name, DateTime date, List<String> tags, String text){
+            public PosterData(String name, DateTime date, List<String> type, String text){
                 this.name = name;
                 this.date = date;
-                this.tags = tags;
+                this.type = type;
                 this.text = text;
             }
 
@@ -318,7 +318,7 @@ namespace TabletopBillboardApplication
             }
 
             public List<string> getTags(){
-                return tags;
+                return type;
             }
 
             public string getText(){
