@@ -6,12 +6,24 @@
     WindowState="Maximized"
     WindowStyle="None"
     >
-    <!-- Height="700" Width="1280" -->
-    <!--<s:SurfaceScrollViewer HorizontalScrollBarVisibility="Auto">
-        <s:ScatterView x:Name="scatter"
-                BorderBrush="PapayaWhip" BorderThickness="3">
+    
+    <Grid>
+        
+        
+        <s:TagVisualizer 
+            Name="MyTagVisualizer" 
+            VerticalAlignment="Stretch"
+            HorizontalAlignment="Stretch"
+            Background="Transparent" 
+            Height="Auto" Width="Auto"
+            VisualizationAdded="OnVisualizationAdded"
+            >
+            
+        </s:TagVisualizer>
 
-        </s:ScatterView>
-    </s:SurfaceScrollViewer>-->
-    <ContentControl x:Name="screenHolder" />
+        <ContentControl x:Name="screenHolder" />
+    </Grid>
+    
+    
+    
 </s:SurfaceWindow>

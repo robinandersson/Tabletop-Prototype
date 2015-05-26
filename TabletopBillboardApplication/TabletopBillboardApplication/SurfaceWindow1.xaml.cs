@@ -34,6 +34,9 @@ namespace TabletopBillboardApplication
         {
             InitializeComponent();
 
+            // Add defenitions for tags
+            InitializeDefinitions();
+
             // Add handlers for window availability events
             AddWindowAvailabilityHandlers();
 
@@ -363,6 +366,62 @@ namespace TabletopBillboardApplication
             }
             public void setDice(int Dice2) {
                 Dice = Dice2;
+            }
+        }
+
+        private void InitializeDefinitions()
+        {
+            for (byte k = 1; k <= 5; k++)
+            {
+                TagVisualizationDefinition tagDef =
+                    new TagVisualizationDefinition();
+                // The tag value that this definition will respond to.
+                tagDef.Value = k;
+                // The .xaml file for the UI
+                tagDef.Source =
+                    new Uri("TagVisualization1.xaml", UriKind.Relative);
+                // The maximum number for this tag value.
+                tagDef.MaxCount = 2;
+                // The visualization stays for 2 seconds.
+                tagDef.LostTagTimeout = 2000.0;
+                // Orientation offset (default).
+                tagDef.OrientationOffsetFromTag = 0.0;
+                // Physical offset (horizontal inches, vertical inches).
+                tagDef.PhysicalCenterOffsetFromTag = new Vector(2.0, 2.0);
+                // Tag removal behavior (default).
+                tagDef.TagRemovedBehavior = TagRemovedBehavior.Fade;
+                // Orient UI to tag? (default).
+                tagDef.UsesTagOrientation = true;
+                // Add the definition to the collection.
+                MyTagVisualizer.Definitions.Add(tagDef);
+            }
+        }
+
+        private void OnVisualizationAdded(object sender, TagVisualizerEventArgs e)
+        {
+            TagVisualization1 tag = (TagVisualization1)e.TagVisualization;
+            switch (tag.VisualizedTag.Value)
+            {
+                case 1:
+                    tag.CameraModel.Content = "Music events, Inc. ABC-12";
+                    tag.myEllipse.Fill = SurfaceColors.Accent1Brush;
+                    break;
+                case 2:
+                    tag.CameraModel.Content = "Fabrikam, Inc. DEF-34";
+                    tag.myEllipse.Fill = SurfaceColors.Accent2Brush;
+                    break;
+                case 3:
+                    tag.CameraModel.Content = "Fabrikam, Inc. GHI-56";
+                    tag.myEllipse.Fill = SurfaceColors.Accent3Brush;
+                    break;
+                case 4:
+                    tag.CameraModel.Content = "Fabrikam, Inc. JKL-78";
+                    tag.myEllipse.Fill = SurfaceColors.Accent4Brush;
+                    break;
+                default:
+                    tag.CameraModel.Content = "UNKNOWN MODEL";
+                    tag.myEllipse.Fill = SurfaceColors.ControlAccentBrush;
+                    break;
             }
         }
     }
