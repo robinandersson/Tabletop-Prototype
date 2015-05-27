@@ -26,8 +26,8 @@
         </s:TagVisualizer>
 
         <s:ScatterView x:Name="scatter">
-            <s:ScatterViewItem Height="220" Width="220">
-                <customUserControl:MyUserControl x:Name="test"/>
+            <s:ScatterViewItem Height="220" Width="220" Background="Transparent">
+                <customUserControl:MyUserControl x:Name="test" Background="Transparent"/>
             </s:ScatterViewItem>
         </s:ScatterView>
 

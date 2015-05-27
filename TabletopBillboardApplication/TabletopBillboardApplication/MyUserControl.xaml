@@ -7,7 +7,7 @@
 			 xmlns:shared="http://schemas.actiprosoftware.com/winfx/xaml/shared"
 			 xmlns:system="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
-             d:DesignHeight="220" d:DesignWidth="220">
+             d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
 
         <!-- Converters-->
@@ -17,7 +17,7 @@
 
     <!--<Grid Style="{StaticResource InlineSamplePanelStyle}">-->
     <Grid>
-        <StackPanel Orientation="Horizontal">
+        <StackPanel Orientation="Horizontal" Background="Transparent">
 
             <StackPanel>
 
