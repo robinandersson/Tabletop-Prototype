@@ -29,14 +29,9 @@ namespace TabletopBillboardApplication
         /// </summary>
         private ScatterViewItem svi;
         private ScatterView scatter;
-        private List<EventData> events;
-        private List<String> tagsOnSurface = new List<String>(); 
         public SurfaceWindow1()
         {
             InitializeComponent();
-
-            // Add defenitions for tags
-            InitializeDefinitions();
 
             // Add handlers for window availability events
             AddWindowAvailabilityHandlers();
@@ -46,11 +41,11 @@ namespace TabletopBillboardApplication
             screenHolder.Content = scatter;
             
             // load text
-            events = new List<EventData>();
-            LoadText(events);
-            setSize(events);
+            List<PosterData> data = new List<PosterData>();
+            LoadText(data);
+            setSize(data);
             // load image
-            LoadImages(events);
+            LoadImages(data);
 
             foreach (object obj in scatter.Items)
             {
@@ -59,39 +54,39 @@ namespace TabletopBillboardApplication
 
         }
 
-        private void setSize(List<EventData> events)
+        private void setSize(List<PosterData> data)
         {
             int num = 0;
             DateTime today = DateTime.Today;
             DateTime tempToday = DateTime.Today;
-            int length = events.Count;
+            int length = data.Count;
             while (length > num+1){
-                DateTime posterDay = events.ElementAt(num).getDate();
-                int dice = 2; //dice 2, further than a month away
+                DateTime posterDay = data.ElementAt(num).getDate();
+                int size = 2; //dice 2, further than a month away
                 int compare = DateTime.Compare(posterDay, today);
                 if (compare == 0) { // posters of today
-                    dice = 6;
+                    size = 6;
                 }
                 else {
                     if(compare < 0) {   // posters from the past
-                        dice = 1;
+                        size = 1;
                     }
                     else {              //dice 4, within 10 days
                         tempToday = DateTime.Today; 
                         tempToday = tempToday.AddDays(10);
                         if (DateTime.Compare(posterDay, tempToday) < 0) {
-                            dice = 4;
+                            size = 4;
                         }
                         else {          //dice 3, further than 10 days, but within a month 
                             tempToday = DateTime.Today;
                             tempToday = tempToday.AddDays(30);
                             if (DateTime.Compare(posterDay, tempToday) < 0){
-                                dice = 3;
+                                size = 3;
                             }
                         }
                     }
                 }
-                 events[num].setSize(dice);
+                 data[num].setSize(size);
                  num++;
             }
         }
@@ -191,7 +186,7 @@ namespace TabletopBillboardApplication
         }
         
         // load images from source
-        void LoadImages(List<EventData> events)
+        void LoadImages(List<PosterData> data)
         {
             string envDir = Environment.CurrentDirectory;
             string[] fileNames = Directory.GetFiles(envDir+@"\Resources\Posters", "*.jpg");
@@ -200,11 +195,10 @@ namespace TabletopBillboardApplication
             {
                 Image img = new Image();
                 img.Source = new BitmapImage(new Uri(name, UriKind.Absolute));
-                int size = events.ElementAt(num2).getSize();
-                //img.Tag = events.ElementAt(num2);
+                int size = data.ElementAt(num2).getSize();
+                img.Tag = data.ElementAt(num2);
                                 
                 svi = new ScatterViewItem();
-                svi.Tag = events.ElementAt(num2);
                 svi.Content = img;
                 int scale = (int)(100 * (img.Source.Width) / img.Source.Height);
                 svi.Height = 100 * size;
@@ -261,7 +255,7 @@ namespace TabletopBillboardApplication
         }
 
         // load text from source
-        private List<EventData> LoadText(List<EventData> events)
+        private List<PosterData> LoadText(List<PosterData> data)
         {
             try
             {
@@ -287,7 +281,7 @@ namespace TabletopBillboardApplication
                             line = String.Concat(line,line0);
                             line0 = sr.ReadLine();
                         }
-                        events.Add(new EventData(name, date, tag, line));
+                        data.Add(new PosterData(name, date, tag, line));
                         name = sr.ReadLine();
                     }
                 }
@@ -297,21 +291,21 @@ namespace TabletopBillboardApplication
                 Console.WriteLine("The file could not be read:");
                 Console.WriteLine(e.Message);
             }
-            return events;
+            return data;
         }
 
         // class to ask for data per image
-        private class EventData
+        private class PosterData
         {
-            private List<String> tags;
+            private List<String> type;
             private String text, name;
             private DateTime date;
             private int size = 0;
 
-            public EventData(String name, DateTime date, List<String> tags, String text){
+            public PosterData(String name, DateTime date, List<String> type, String text){
                 this.name = name;
                 this.date = date;
-                this.tags = tags;
+                this.type = type;
                 this.text = text;
             }
 
@@ -324,7 +318,7 @@ namespace TabletopBillboardApplication
             }
 
             public List<string> getTags(){
-                return tags;
+                return type;
             }
 
             public string getText(){
