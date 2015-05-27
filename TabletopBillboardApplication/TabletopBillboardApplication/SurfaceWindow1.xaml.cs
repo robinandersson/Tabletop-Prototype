@@ -214,49 +214,9 @@ namespace TabletopBillboardApplication
                     svi.Width = 100 * size;
                     svi.Height = scale * size;
                 }
-
-                svi.AddHandler(TouchExtensions.TapGestureEvent, new RoutedEventHandler(OnPosterTap), true);
                 scatter.Items.Add(svi);
                 num2++;
             }
-        }
-
-        void OnPosterTap(object sender, RoutedEventArgs e)
-        {
-
-            ScatterViewItem svi;
-
-            // Find ScatterViewItem parent of image (object of type System.Windows.Controls.Image returned as source normally)
-            if (e.Source.GetType().Equals(typeof(Image)))
-            {
-                DependencyObject parent = LogicalTreeHelper.GetParent(e.Source as Image);
-                svi = parent as ScatterViewItem;
-            } 
-            else
-            {
-                svi = e.Source as ScatterViewItem;
-            }
-
-            // Handle click event
-            if (svi != null)
-            {
-
-                // Change screen upon click on poster
-                ScatterView newScatter = new ScatterView();
-
-                ScatterViewItem item = new ScatterViewItem();
-
-                Label label = new Label();
-                label.Content = "New Screen! :D";
-
-                item.Content = label;
-                newScatter.Items.Add(item);
-
-                screenHolder.Content = newScatter;
-            }
-                    
-            return;
-
         }
 
         // load text from source
