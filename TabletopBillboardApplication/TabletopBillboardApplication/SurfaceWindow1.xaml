@@ -17,6 +17,7 @@
             Background="Transparent" 
             Height="Auto" Width="Auto"
             VisualizationAdded="OnVisualizationAdded"
+            VisualizationRemoved="OnVisualizationRemoved"
             >
             
         </s:TagVisualizer>

@@ -30,6 +30,7 @@ namespace TabletopBillboardApplication
         private ScatterViewItem svi;
         private ScatterView scatter;
         private List<EventData> events;
+        private List<String> tagsOnSurface = new List<String>(); 
         public SurfaceWindow1()
         {
             InitializeComponent();
@@ -200,9 +201,10 @@ namespace TabletopBillboardApplication
                 Image img = new Image();
                 img.Source = new BitmapImage(new Uri(name, UriKind.Absolute));
                 int size = events.ElementAt(num2).getSize();
-                img.Tag = events.ElementAt(num2);
+                //img.Tag = events.ElementAt(num2);
                                 
                 svi = new ScatterViewItem();
+                svi.Tag = events.ElementAt(num2);
                 svi.Content = img;
                 int scale = (int)(100 * (img.Source.Width) / img.Source.Height);
                 svi.Height = 100 * size;
@@ -369,17 +371,13 @@ namespace TabletopBillboardApplication
         {
             TagVisualization1 tag = (TagVisualization1)e.TagVisualization;
 
-            List<String> tags = new List<String>(); 
-
             switch (tag.VisualizedTag.Value)
             {
                 case 1:
-                    tag.CameraModel.Content = "Music events, Inc. ABC-12";
-                    tag.myEllipse.Fill = SurfaceColors.Accent1Brush;
+                    tagsOnSurface.Add("music");
                     break;
                 case 2:
-                    tag.CameraModel.Content = "Fabrikam, Inc. DEF-34";
-                    tag.myEllipse.Fill = SurfaceColors.Accent2Brush;
+                    tagsOnSurface.Add("sport");
                     break;
                 case 3:
                     tag.CameraModel.Content = "Fabrikam, Inc. GHI-56";
@@ -393,21 +391,87 @@ namespace TabletopBillboardApplication
                     tag.CameraModel.Content = "UNKNOWN MODEL";
                     tag.myEllipse.Fill = SurfaceColors.ControlAccentBrush;
                     break;
+
             }
 
-            if (tags != null)
-            {
-                sortOutEvents(tags);
-            }
+            sortOutEvents();
+
         }
 
-        private void sortOutEvents(List<string> tags)
+        private void OnVisualizationRemoved(object sender, TagVisualizerEventArgs e)
         {
-            foreach(EventData eventdata in events)
+            TagVisualization1 tag = (TagVisualization1)e.TagVisualization;
+
+            switch (tag.VisualizedTag.Value)
             {
-                List<String> eventTag = eventdata.getTags();
+                case 1:
+                    tagsOnSurface.Remove("music");
+                    break;
+                case 2:
+                    tagsOnSurface.Remove("sport");
+                    break;
+                case 3:
+                    tag.CameraModel.Content = "Fabrikam, Inc. GHI-56";
+                    tag.myEllipse.Fill = SurfaceColors.Accent3Brush;
+                    break;
+                case 4:
+                    tag.CameraModel.Content = "Fabrikam, Inc. JKL-78";
+                    tag.myEllipse.Fill = SurfaceColors.Accent4Brush;
+                    break;
+                default:
+                    tag.CameraModel.Content = "UNKNOWN MODEL";
+                    tag.myEllipse.Fill = SurfaceColors.ControlAccentBrush;
+                    break;
 
             }
+
+            sortOutEvents();
+        }
+
+        private void sortOutEvents()
+        {
+            // If no tags on the surface - display all events
+            if (tagsOnSurface.Count == 0)
+            {
+                foreach (ScatterViewItem svi in scatter.Items)
+                {
+                    svi.Visibility = Visibility.Visible;
+                }
+
+
+            }
+            else
+            {
+
+                // display the events that matches a tag
+                foreach (ScatterViewItem svi in scatter.Items)
+                {
+                    EventData eventData = svi.Tag as EventData;
+                    bool tagPresent = false;
+                    foreach (string eventTag in eventData.getTags())
+                    {
+                        foreach (string tag in tagsOnSurface)
+                        {
+                            if (eventTag.Equals(tag))
+                            {
+                                tagPresent = true;
+                                svi.Visibility = Visibility.Visible;
+                                break;
+                            }
+                        }
+
+                    }
+
+                    if (!tagPresent)
+                    {
+                        svi.Visibility = Visibility.Hidden;
+                    }
+
+                }
+
+            }
+
+            
         }
     }
 }
