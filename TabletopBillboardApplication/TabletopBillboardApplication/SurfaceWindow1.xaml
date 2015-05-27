@@ -3,15 +3,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:s="http://schemas.microsoft.com/surface/2008"
     Title="TabletopBillboardApplication"
-    WindowState="Maximized"
-    WindowStyle="None"
     >
-    <!-- Height="700" Width="1280" -->
-    <!--<s:SurfaceScrollViewer HorizontalScrollBarVisibility="Auto">
-        <s:ScatterView x:Name="scatter"
-                BorderBrush="PapayaWhip" BorderThickness="3">
+    <Grid>
 
-        </s:ScatterView>
-    </s:SurfaceScrollViewer>-->
-    <ContentControl x:Name="screenHolder" />
+    </Grid>
 </s:SurfaceWindow>

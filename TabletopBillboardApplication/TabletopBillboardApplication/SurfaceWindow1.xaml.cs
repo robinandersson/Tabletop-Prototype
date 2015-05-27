@@ -15,7 +15,6 @@ using Microsoft.Surface;
 using Microsoft.Surface.Presentation;
 using Microsoft.Surface.Presentation.Controls;
 using Microsoft.Surface.Presentation.Input;
-using System.IO;
 
 namespace TabletopBillboardApplication
 {
@@ -32,20 +31,29 @@ namespace TabletopBillboardApplication
         public SurfaceWindow1()
         {
             InitializeComponent();
+            //string envDir = Environment.CurrentDirectory;
+            //string[] backIm = Directory.GetFiles(envDir + @"\Resources", "*.jpg");
+            //Image img = new Image();
+            //img.Source = new BitmapImage(new Uri(backIm[0], UriKind.Absolute));
+            //scatter.Background.SetCurrentValue = img;
 
             // Add handlers for window availability events
             AddWindowAvailabilityHandlers();
 
             scatter = new ScatterView();
-
             screenHolder.Content = scatter;
+            
+            
+            //scatter.Background.Opacity = new Double();
+            //scatter = "C:/Users/Sigrid/Dropbox/Tabletop-Prototype/TabletopBillboardApplication/TabletopBillboardApplication/Resources/SlottskogenZoom.jpg";
             
             // load text
             List<PosterData> data = new List<PosterData>();
             LoadText(data);
-            setSize(data);
+            setSize(data, DateTime.Today);
             // load image
             LoadImages(data);
+            
 
             foreach (object obj in scatter.Items)
             {
@@ -54,11 +62,10 @@ namespace TabletopBillboardApplication
 
         }
 
-        private void setSize(List<PosterData> data)
+        private void setSize(List<PosterData> data, DateTime today)
         {
             int num = 0;
-            DateTime today = DateTime.Today;
-            DateTime tempToday = DateTime.Today;
+            DateTime tempToday = today;
             int length = data.Count;
             while (length > num+1){
                 DateTime posterDay = data.ElementAt(num).getDate();
@@ -68,17 +75,17 @@ namespace TabletopBillboardApplication
                     size = 6;
                 }
                 else {
-                    if(compare < 0) {   // posters from the past
+                    if(compare < 0) {   // posters from the past, are not visible (see loadImages)
                         size = 1;
                     }
                     else {              //dice 4, within 10 days
-                        tempToday = DateTime.Today; 
+                        tempToday = today; 
                         tempToday = tempToday.AddDays(10);
                         if (DateTime.Compare(posterDay, tempToday) < 0) {
                             size = 4;
                         }
                         else {          //dice 3, further than 10 days, but within a month 
-                            tempToday = DateTime.Today;
+                            tempToday = today;
                             tempToday = tempToday.AddDays(30);
                             if (DateTime.Compare(posterDay, tempToday) < 0){
                                 size = 3;
@@ -209,7 +216,9 @@ namespace TabletopBillboardApplication
                     svi.Width = 100 * size;
                     svi.Height = scale * size;
                 }
-
+                if(size == 0){ // past events are not visible
+                    svi.Visibility = Visibility.Hidden;
+                 }
                 svi.AddHandler(TouchExtensions.TapGestureEvent, new RoutedEventHandler(OnPosterTap), true);
                 scatter.Items.Add(svi);
                 num2++;
@@ -233,22 +242,22 @@ namespace TabletopBillboardApplication
             }
 
             // Handle click event
-            if (svi != null)
-            {
+            //if (svi != null)
+            //{
 
-                // Change screen upon click on poster
-                ScatterView newScatter = new ScatterView();
+            //    // Change screen upon click on poster
+            //    ScatterView newScatter = new ScatterView();
 
-                ScatterViewItem item = new ScatterViewItem();
+            //    ScatterViewItem item = new ScatterViewItem();
 
-                Label label = new Label();
-                label.Content = "New Screen! :D";
+            //    Label label = new Label();
+            //    label.Content = "New Screen! :D";
 
-                item.Content = label;
-                newScatter.Items.Add(item);
+            //    item.Content = label;
+            //    newScatter.Items.Add(item);
 
-                screenHolder.Content = newScatter;
-            }
+            //    screenHolder.Content = newScatter;
+            //}
                     
             return;
 
