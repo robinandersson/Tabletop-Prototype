@@ -178,7 +178,9 @@ namespace TabletopBillboardApplication
             img1.Source = img.Source.Clone();
             Canvas can = new Canvas();
             ImageBrush ib = new ImageBrush();
-            ib.ImageSource = new BitmapImage(new Uri(@"E:\tabletop computing\Tabletop-Prototype\TabletopBillboardApplication\TabletopBillboardApplication\Resources\background\plain-hd-wallpapers.jpg", UriKind.Relative));
+            String dir = Environment.CurrentDirectory;
+            String imagePath = dir+ @"\Resources\background\plain-hd-wallpapers.jpg";
+            ib.ImageSource = new BitmapImage(new Uri(imagePath, UriKind.Relative));
             can.Background = ib;
             
             Label lab1 = new Label();
