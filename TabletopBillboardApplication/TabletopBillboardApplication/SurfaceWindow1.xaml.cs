@@ -29,6 +29,8 @@ namespace TabletopBillboardApplication
         /// </summary>
         private ScatterViewItem svi;
         private ScatterView scatter;
+        List<PosterData> events;
+        private List<String> tagsOnSurface = new List<String>(); 
         public SurfaceWindow1()
         {
             InitializeComponent();
@@ -36,16 +38,19 @@ namespace TabletopBillboardApplication
             // Add handlers for window availability events
             AddWindowAvailabilityHandlers();
 
+            // Add handlers for Tags
+            InitializeDefinitions();
+
             scatter = new ScatterView();
 
             screenHolder.Content = scatter;
-            
+
+            events = new List<PosterData>();
             // load text
-            List<PosterData> data = new List<PosterData>();
-            LoadText(data);
-            setSize(data);
+            LoadText(events);
+            setSize(events);
             // load image
-            LoadImages(data);
+            LoadImages(events);
 
             foreach (object obj in scatter.Items)
             {
@@ -54,14 +59,14 @@ namespace TabletopBillboardApplication
 
         }
 
-        private void setSize(List<PosterData> data)
+        private void setSize(List<PosterData> events)
         {
             int num = 0;
             DateTime today = DateTime.Today;
             DateTime tempToday = DateTime.Today;
-            int length = data.Count;
+            int length = events.Count;
             while (length > num+1){
-                DateTime posterDay = data.ElementAt(num).getDate();
+                DateTime posterDay = events.ElementAt(num).getDate();
                 int size = 2; //dice 2, further than a month away
                 int compare = DateTime.Compare(posterDay, today);
                 if (compare == 0) { // posters of today
@@ -86,7 +91,7 @@ namespace TabletopBillboardApplication
                         }
                     }
                 }
-                 data[num].setSize(size);
+                 events[num].setSize(size);
                  num++;
             }
         }
@@ -186,7 +191,7 @@ namespace TabletopBillboardApplication
         }
         
         // load images from source
-        void LoadImages(List<PosterData> data)
+        void LoadImages(List<PosterData> events)
         {
             string envDir = Environment.CurrentDirectory;
             string[] fileNames = Directory.GetFiles(envDir+@"\Resources\Posters", "*.jpg");
@@ -195,10 +200,10 @@ namespace TabletopBillboardApplication
             {
                 Image img = new Image();
                 img.Source = new BitmapImage(new Uri(name, UriKind.Absolute));
-                int size = data.ElementAt(num2).getSize();
-                img.Tag = data.ElementAt(num2);
+                int size = events.ElementAt(num2).getSize();
                                 
                 svi = new ScatterViewItem();
+                svi.Tag = events.ElementAt(num2);
                 svi.Content = img;
                 int scale = (int)(100 * (img.Source.Width) / img.Source.Height);
                 svi.Height = 100 * size;
@@ -255,7 +260,7 @@ namespace TabletopBillboardApplication
         }
 
         // load text from source
-        private List<PosterData> LoadText(List<PosterData> data)
+        private List<PosterData> LoadText(List<PosterData> events)
         {
             try
             {
@@ -281,7 +286,7 @@ namespace TabletopBillboardApplication
                             line = String.Concat(line,line0);
                             line0 = sr.ReadLine();
                         }
-                        data.Add(new PosterData(name, date, tag, line));
+                        events.Add(new PosterData(name, date, tag, line));
                         name = sr.ReadLine();
                     }
                 }
@@ -291,7 +296,7 @@ namespace TabletopBillboardApplication
                 Console.WriteLine("The file could not be read:");
                 Console.WriteLine(e.Message);
             }
-            return data;
+            return events;
         }
 
         // class to ask for data per image
@@ -432,7 +437,7 @@ namespace TabletopBillboardApplication
                 // display the events that matches a tag
                 foreach (ScatterViewItem svi in scatter.Items)
                 {
-                    EventData eventData = svi.Tag as EventData;
+                    PosterData eventData = svi.Tag as PosterData;
                     bool tagPresent = false;
                     foreach (string eventTag in eventData.getTags())
                     {
