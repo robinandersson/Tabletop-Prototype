@@ -22,7 +22,7 @@
             
         </s:TagVisualizer>
 
-        <ContentControl x:Name="screenHolder" />
+        <s:ScatterView x:Name="scatter" />
     </Grid>
     
     

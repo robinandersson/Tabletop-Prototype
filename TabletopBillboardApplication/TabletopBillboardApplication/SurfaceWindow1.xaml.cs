@@ -28,7 +28,7 @@ namespace TabletopBillboardApplication
         /// Default constructor.
         /// </summary>
         private ScatterViewItem svi;
-        private ScatterView scatter;
+        //private ScatterView scatter;
         List<EventData> events;
         private List<String> tagsOnSurface = new List<String>(); 
         public SurfaceWindow1()
@@ -41,9 +41,9 @@ namespace TabletopBillboardApplication
             // Add handlers for Tags
             InitializeDefinitions();
 
-            scatter = new ScatterView();
+            //scatter = new ScatterView();
 
-            screenHolder.Content = scatter;
+            //screenHolder.Content = scatter;
 
             events = new List<EventData>();
             // load text
@@ -238,7 +238,7 @@ namespace TabletopBillboardApplication
             }
 
             // Handle click event
-            if (svi != null)
+            /*if (svi != null) OLD CODE
             {
 
                 // Change screen upon click on poster
@@ -252,8 +252,8 @@ namespace TabletopBillboardApplication
                 item.Content = label;
                 newScatter.Items.Add(item);
 
-                screenHolder.Content = newScatter;
-            }
+                //screenHolder.Content = newScatter;
+            }*/
                     
             return;
 
