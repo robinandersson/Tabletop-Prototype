@@ -27,27 +27,72 @@ namespace TabletopBillboardApplication
         /// <summary>
         /// Default constructor.
         /// </summary>
-        private Random rnd;
         private ScatterViewItem svi;
+        private ScatterView scatter;
+        private List<EventData> events;
         public SurfaceWindow1()
         {
             InitializeComponent();
-            ScatterViewItem item = new ScatterViewItem();
-            item.Height = 200;
-            item.Width = 1000;
+
+            // Add defenitions for tags
+            InitializeDefinitions();
 
             // Add handlers for window availability events
             AddWindowAvailabilityHandlers();
+
+            scatter = new ScatterView();
+
+            screenHolder.Content = scatter;
             
-            rnd = new Random();
+            // load text
+            events = new List<EventData>();
+            LoadText(events);
+            setSize(events);
             // load image
-            LoadImages();
+            LoadImages(events);
 
-           // string envDir = Environment.CurrentDirectory;
-            //string[] fileNames = Directory.GetFiles(envDir + @"\Resources", "*.jpg");
-            //scatter.ItemsSource = fileNames;
-               // Directory.GetFiles(@"C:\Users\Public\Pictures\Sample Pictures", "*.jpg");
+            foreach (object obj in scatter.Items)
+            {
+                ScatterViewItem svi = scatter.ItemContainerGenerator.ContainerFromItem(obj) as ScatterViewItem;
+            }
 
+        }
+
+        private void setSize(List<EventData> events)
+        {
+            int num = 0;
+            DateTime today = DateTime.Today;
+            DateTime tempToday = DateTime.Today;
+            int length = events.Count;
+            while (length > num+1){
+                DateTime posterDay = events.ElementAt(num).getDate();
+                int dice = 2; //dice 2, further than a month away
+                int compare = DateTime.Compare(posterDay, today);
+                if (compare == 0) { // posters of today
+                    dice = 6;
+                }
+                else {
+                    if(compare < 0) {   // posters from the past
+                        dice = 1;
+                    }
+                    else {              //dice 4, within 10 days
+                        tempToday = DateTime.Today; 
+                        tempToday = tempToday.AddDays(10);
+                        if (DateTime.Compare(posterDay, tempToday) < 0) {
+                            dice = 4;
+                        }
+                        else {          //dice 3, further than 10 days, but within a month 
+                            tempToday = DateTime.Today;
+                            tempToday = tempToday.AddDays(30);
+                            if (DateTime.Compare(posterDay, tempToday) < 0){
+                                dice = 3;
+                            }
+                        }
+                    }
+                }
+                 events[num].setSize(dice);
+                 num++;
+            }
         }
 
         /// <summary>
@@ -73,7 +118,32 @@ namespace TabletopBillboardApplication
             ApplicationServices.WindowInteractive += OnWindowInteractive;
             ApplicationServices.WindowNoninteractive += OnWindowNoninteractive;
             ApplicationServices.WindowUnavailable += OnWindowUnavailable;
+            //ManipulationDelta += OnManipulationDelta;
         }
+
+        // maximize zooming in
+        /*public void OnManipulationDelta(object sender, ManipulationDeltaEventArgs args)
+        {
+            if (sender.GetType() == typeof(ScatterViewItem))
+            {
+                ScatterViewItem name = (ScatterViewItem) (sender);
+
+                if (name.ActualHeight > 700 || name.ActualWidth > 700)
+                {
+                    bool W = name.ActualHeight == Math.Max(name.ActualHeight, name.ActualWidth);
+                    if (W)
+                    {
+                        name.Height = 700;
+                    }
+                    else
+                    {
+                        name.Width = 700;
+                    }
+                }
+            }
+            //svi.MaxHeight = 700;
+            //svi.MaxWidth = 700;
+        }*/
 
         /// <summary>
         /// Removes handlers for window availability events.
@@ -85,6 +155,7 @@ namespace TabletopBillboardApplication
             ApplicationServices.WindowNoninteractive -= OnWindowNoninteractive;
             ApplicationServices.WindowUnavailable -= OnWindowUnavailable;
         }
+
 
         /// <summary>
         /// This is called when the user can interact with the application's window.
@@ -119,142 +190,224 @@ namespace TabletopBillboardApplication
         }
         
         // load images from source
-        void LoadImages()
+        void LoadImages(List<EventData> events)
         {
             string envDir = Environment.CurrentDirectory;
-            string[] fileNames = Directory.GetFiles(envDir+@"\Resources", "*.jpg");
-            //scatter.ItemsSource = fileNames;
-            //foreach (object obj in scatter.Items)
-            //{
-            //    ScatterViewItem svi = scatter.ItemContainerGenerator.ContainerFromItem(obj) as ScatterViewItem;
-            //    int dice = rnd.Next(1, 6);
-            //    svi.Width = 100 * dice;
-            //    svi.Height = 100*dice;
-            //    scatter.UpdateLayout();
-            //}
+            string[] fileNames = Directory.GetFiles(envDir+@"\Resources\Posters", "*.jpg");
+            int num2 = 0;
             foreach (string name in fileNames)
             {
                 Image img = new Image();
                 img.Source = new BitmapImage(new Uri(name, UriKind.Absolute));
-                // create random size for image
-                int dice = rnd.Next(1,6);
-
-                double width = img.Source.Width*dice*0.1;
-                double height = img.Source.Height*dice*0.1;
-                
-                
-                img.Tag = "this image 1";
+                int size = events.ElementAt(num2).getSize();
+                img.Tag = events.ElementAt(num2);
+                                
                 svi = new ScatterViewItem();
-                svi.Width = width;
-                svi.Height = height;
                 svi.Content = img;
-                svi.PreviewTouchDown += new EventHandler<TouchEventArgs>(img_PreviewTouchDown);
+                int scale = (int)(100 * (img.Source.Width) / img.Source.Height);
+                svi.Height = 100 * size;
+                svi.Width = scale * size;
+                if (svi.Width > svi.Height)
+                {
+                    scale = (int)(100 * (img.Source.Height) / img.Source.Width);
+                    svi.Width = 100 * size;
+                    svi.Height = scale * size;
+                }
+
+                svi.AddHandler(TouchExtensions.TapGestureEvent, new RoutedEventHandler(OnPosterTap), true);
                 scatter.Items.Add(svi);
+                num2++;
             }
         }
 
-        void img_PreviewTouchDown(object sender, TouchEventArgs e)
+        void OnPosterTap(object sender, RoutedEventArgs e)
         {
 
-            var element = sender as ContentControl;
-            //sender. = Visibility.Hidden;
-            Double x = 0;
-            Double y = 0;
-            if (element != null)
-            {
-                var location = element.PointToScreen(new Point(0, 0));
-                x = location.X;
-                y = location.Y;
+            ScatterViewItem svi;
 
+            // Find ScatterViewItem parent of image (object of type System.Windows.Controls.Image returned as source normally)
+            if (e.Source.GetType().Equals(typeof(Image)))
+            {
+                DependencyObject parent = LogicalTreeHelper.GetParent(e.Source as Image);
+                svi = parent as ScatterViewItem;
+            } 
+            else
+            {
+                svi = e.Source as ScatterViewItem;
             }
-            ScatterViewItem item = (ScatterViewItem)sender;
-            Image img  = (Image)item.Content;
-            item.Visibility = Visibility.Hidden;
 
-            svi = new ScatterViewItem();
-            //string name = (string)img.Tag;
-            //MessageBox.Show(name);
-            Image img1 = new Image();
-            img1.Source = img.Source.Clone();
-            Canvas can = new Canvas();
-            ImageBrush ib = new ImageBrush();
-            String dir = Environment.CurrentDirectory;
-            String imagePath = dir+ @"\Resources\background\plain-hd-wallpapers.jpg";
-            ib.ImageSource = new BitmapImage(new Uri(imagePath, UriKind.Relative));
-            can.Background = ib;
-            
-            Label lab1 = new Label();
-            lab1.Content = "Description of this image";
-            
-            Canvas.SetRight(img1,20);
-            Canvas.SetLeft(img1, 20);
-            Canvas.SetTop(img1, 20);
-            Canvas.SetBottom(img1, 20);
-            can.Children.Add(img1);
-
-            Canvas.SetRight(lab1, 100);
-            Canvas.SetLeft(lab1, 100);
-            Canvas.SetTop(lab1, 100);
-            Canvas.SetBottom(lab1, 100);
-            can.Children.Add(lab1);
-            can.Width = 500;
-            can.Height = 500;
-            svi.Content = can;
-            svi.Center = new Point(x+100,y+100);
-            //svi.Width = img1.Width;
-            //svi.Height = img1.Height*2;
-
-           
-            scatter.Items.Add(svi);
-           
-            //foreach (Object obj in scatter.Items){
-            //    ScatterViewItem sv = scatter.ItemContainerGenerator.ContainerFromItem(obj) as ScatterViewItem;
-            //    if (sv.Content.GetType().Equals(typeof(Canvas)))
-            //    {
-            //        scatter.Items.RemoveAt(1);
-            //    }
-            //}
-            //scatter.Items.RemoveAt(1);
-        }
-
-        private void OnItemClicked(object sender, RoutedEventArgs e)
-        {
-            // Get the button that was clicked and hide it.
-            Button b = (Button)e.Source as Button;
-            b.Visibility = Visibility.Collapsed;
-
-            // Get the ScatterViewItem control for the clicked button.
-            ScatterViewItem item = (ScatterViewItem)scatter.ContainerFromElement(b);
-
-            // Get the image within the ScatterViewItemcontrol.
-            System.Windows.Controls.ContentPresenter content = FindContentPresenter(item);
-            System.Windows.Controls.Image img =
-             (System.Windows.Controls.Image)content.ContentTemplate.FindName("img", content);
-
-            // Convert the image to grayscale.
-            img.Source = new FormatConvertedBitmap(
-             (BitmapSource)img.Source, PixelFormats.Gray16, BitmapPalettes.Gray16, 0);
-        }
-
-        System.Windows.Controls.ContentPresenter FindContentPresenter(DependencyObject obj)
-        {
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(obj); i++)
+            // Handle click event
+            if (svi != null)
             {
-                DependencyObject child = VisualTreeHelper.GetChild(obj, i);
-                if (child != null && child is System.Windows.Controls.ContentPresenter)
+
+                // Change screen upon click on poster
+                ScatterView newScatter = new ScatterView();
+
+                ScatterViewItem item = new ScatterViewItem();
+
+                Label label = new Label();
+                label.Content = "New Screen! :D";
+
+                item.Content = label;
+                newScatter.Items.Add(item);
+
+                screenHolder.Content = newScatter;
+            }
+                    
+            return;
+
+        }
+
+        // load text from source
+        private List<EventData> LoadText(List<EventData> events)
+        {
+            try
+            {
+                string path = Environment.CurrentDirectory + @"\Resources\Text Posters\TextImage.txt";
+                using (StreamReader sr = new StreamReader(path))
                 {
-                    return (System.Windows.Controls.ContentPresenter)child;
-                }
-                else
-                {
-                    System.Windows.Controls.ContentPresenter childOfChild =
-                        FindContentPresenter(child);
-                    if (childOfChild != null)
-                        return childOfChild;
+                    String name = sr.ReadLine();
+                    while (name != null)
+                    {
+                        String dat = sr.ReadLine();
+                        DateTime date = DateTime.ParseExact(dat, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                        List<String> tag= new List<String>();
+                        String tag0 = sr.ReadLine();
+                        while (tag0 != "$")
+                        {
+                            tag.Add(tag0);
+                            tag0 = sr.ReadLine();
+                        }
+                        String line0 = sr.ReadLine();
+                        String line = null;
+                        while (line0 != "$")
+                        {
+                            line = String.Concat(line,line0);
+                            line0 = sr.ReadLine();
+                        }
+                        events.Add(new EventData(name, date, tag, line));
+                        name = sr.ReadLine();
+                    }
                 }
             }
-            return null;
+            catch (Exception e)
+            {
+                Console.WriteLine("The file could not be read:");
+                Console.WriteLine(e.Message);
+            }
+            return events;
         }
 
+        // class to ask for data per image
+        private class EventData
+        {
+            private List<String> tags;
+            private String text, name;
+            private DateTime date;
+            private int size = 0;
+
+            public EventData(String name, DateTime date, List<String> tags, String text){
+                this.name = name;
+                this.date = date;
+                this.tags = tags;
+                this.text = text;
+            }
+
+            public string getName(){
+                return name;
+            }
+
+            public DateTime getDate(){
+                return date;
+            }
+
+            public List<string> getTags(){
+                return tags;
+            }
+
+            public string getText(){
+                return text;
+            }
+
+            public int getSize() {
+                return size;
+            }
+            public void setSize(int size) {
+                this.size = size;
+            }
+        }
+
+        private void InitializeDefinitions()
+        {
+            for (byte k = 1; k <= 5; k++)
+            {
+                TagVisualizationDefinition tagDef =
+                    new TagVisualizationDefinition();
+                // The tag value that this definition will respond to.
+                tagDef.Value = k;
+                // The .xaml file for the UI
+                tagDef.Source =
+                    new Uri("TagVisualization1.xaml", UriKind.Relative);
+                // The maximum number for this tag value.
+                tagDef.MaxCount = 2;
+                // The visualization stays for 2 seconds.
+                tagDef.LostTagTimeout = 2000.0;
+                // Orientation offset (default).
+                tagDef.OrientationOffsetFromTag = 0.0;
+                // Physical offset (horizontal inches, vertical inches).
+                tagDef.PhysicalCenterOffsetFromTag = new Vector(2.0, 2.0);
+                // Tag removal behavior (default).
+                tagDef.TagRemovedBehavior = TagRemovedBehavior.Fade;
+                // Orient UI to tag? (default).
+                tagDef.UsesTagOrientation = true;
+                // Add the definition to the collection.
+                MyTagVisualizer.Definitions.Add(tagDef);
+            }
+        }
+
+        private void OnVisualizationAdded(object sender, TagVisualizerEventArgs e)
+        {
+            TagVisualization1 tag = (TagVisualization1)e.TagVisualization;
+
+            List<String> tags = new List<String>(); 
+
+            switch (tag.VisualizedTag.Value)
+            {
+                case 1:
+                    tag.CameraModel.Content = "Music events, Inc. ABC-12";
+                    tag.myEllipse.Fill = SurfaceColors.Accent1Brush;
+                    break;
+                case 2:
+                    tag.CameraModel.Content = "Fabrikam, Inc. DEF-34";
+                    tag.myEllipse.Fill = SurfaceColors.Accent2Brush;
+                    break;
+                case 3:
+                    tag.CameraModel.Content = "Fabrikam, Inc. GHI-56";
+                    tag.myEllipse.Fill = SurfaceColors.Accent3Brush;
+                    break;
+                case 4:
+                    tag.CameraModel.Content = "Fabrikam, Inc. JKL-78";
+                    tag.myEllipse.Fill = SurfaceColors.Accent4Brush;
+                    break;
+                default:
+                    tag.CameraModel.Content = "UNKNOWN MODEL";
+                    tag.myEllipse.Fill = SurfaceColors.ControlAccentBrush;
+                    break;
+            }
+
+            if (tags != null)
+            {
+                sortOutEvents(tags);
+            }
+        }
+
+        private void sortOutEvents(List<string> tags)
+        {
+            foreach(EventData eventdata in events)
+            {
+                List<String> eventTag = eventdata.getTags();
+
+            }
+        }
     }
 }
