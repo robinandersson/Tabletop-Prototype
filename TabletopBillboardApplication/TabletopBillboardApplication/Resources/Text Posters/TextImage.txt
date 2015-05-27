@@ -1,7 +1,7 @@
 Euro Math
 25/05/2014
 music
-tag2
+sport
 tag3
 tag4
 $
@@ -9,7 +9,7 @@ Text
 $
 Second image
 25/05/2014
-Tag1
+sport
 tag2
 tag3
 $
@@ -17,21 +17,21 @@ Text
 $
 Third image
 25/05/2015
-Tag1
+music
 tag2
 $
 Text
 $
 Fourth image
 25/05/2015
-Tag1
+music
 $
 Text
 $
 Fifth image
 02/06/2015
-Tag1
-tag2
+sport
+music
 tag3
 tag4
 $
