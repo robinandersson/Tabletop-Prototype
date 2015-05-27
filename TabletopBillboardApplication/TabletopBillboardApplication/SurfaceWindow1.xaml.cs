@@ -29,6 +29,7 @@ namespace TabletopBillboardApplication
         /// </summary>
         private ScatterViewItem svi;
         private ScatterView scatter;
+        private List<EventData> events;
         public SurfaceWindow1()
         {
             InitializeComponent();
@@ -44,11 +45,11 @@ namespace TabletopBillboardApplication
             screenHolder.Content = scatter;
             
             // load text
-            List<EventData> data = new List<EventData>();
-            LoadText(data);
-            setSize(data);
+            events = new List<EventData>();
+            LoadText(events);
+            setSize(events);
             // load image
-            LoadImages(data);
+            LoadImages(events);
 
             foreach (object obj in scatter.Items)
             {
@@ -57,14 +58,14 @@ namespace TabletopBillboardApplication
 
         }
 
-        private void setSize(List<EventData> data)
+        private void setSize(List<EventData> events)
         {
             int num = 0;
             DateTime today = DateTime.Today;
             DateTime tempToday = DateTime.Today;
-            int length = data.Count;
+            int length = events.Count;
             while (length > num+1){
-                DateTime posterDay = data.ElementAt(num).getDate();
+                DateTime posterDay = events.ElementAt(num).getDate();
                 int dice = 2; //dice 2, further than a month away
                 int compare = DateTime.Compare(posterDay, today);
                 if (compare == 0) { // posters of today
@@ -89,7 +90,7 @@ namespace TabletopBillboardApplication
                         }
                     }
                 }
-                 data[num].setSize(dice);
+                 events[num].setSize(dice);
                  num++;
             }
         }
@@ -189,7 +190,7 @@ namespace TabletopBillboardApplication
         }
         
         // load images from source
-        void LoadImages(List<EventData> data)
+        void LoadImages(List<EventData> events)
         {
             string envDir = Environment.CurrentDirectory;
             string[] fileNames = Directory.GetFiles(envDir+@"\Resources\Posters", "*.jpg");
@@ -198,8 +199,8 @@ namespace TabletopBillboardApplication
             {
                 Image img = new Image();
                 img.Source = new BitmapImage(new Uri(name, UriKind.Absolute));
-                int size = data.ElementAt(num2).getSize();
-                img.Tag = data.ElementAt(num2);
+                int size = events.ElementAt(num2).getSize();
+                img.Tag = events.ElementAt(num2);
                                 
                 svi = new ScatterViewItem();
                 svi.Content = img;
@@ -258,7 +259,7 @@ namespace TabletopBillboardApplication
         }
 
         // load text from source
-        private List<EventData> LoadText(List<EventData> data)
+        private List<EventData> LoadText(List<EventData> events)
         {
             try
             {
@@ -284,7 +285,7 @@ namespace TabletopBillboardApplication
                             line = String.Concat(line,line0);
                             line0 = sr.ReadLine();
                         }
-                        data.Add(new EventData(name, date, tag, line));
+                        events.Add(new EventData(name, date, tag, line));
                         name = sr.ReadLine();
                     }
                 }
@@ -294,7 +295,7 @@ namespace TabletopBillboardApplication
                 Console.WriteLine("The file could not be read:");
                 Console.WriteLine(e.Message);
             }
-            return data;
+            return events;
         }
 
         // class to ask for data per image
@@ -367,6 +368,9 @@ namespace TabletopBillboardApplication
         private void OnVisualizationAdded(object sender, TagVisualizerEventArgs e)
         {
             TagVisualization1 tag = (TagVisualization1)e.TagVisualization;
+
+            List<String> tags = new List<String>(); 
+
             switch (tag.VisualizedTag.Value)
             {
                 case 1:
@@ -389,6 +393,20 @@ namespace TabletopBillboardApplication
                     tag.CameraModel.Content = "UNKNOWN MODEL";
                     tag.myEllipse.Fill = SurfaceColors.ControlAccentBrush;
                     break;
+            }
+
+            if (tags != null)
+            {
+                sortOutEvents(tags);
+            }
+        }
+
+        private void sortOutEvents(List<string> tags)
+        {
+            foreach(EventData eventdata in events)
+            {
+                List<String> eventTag = eventdata.getTags();
+
             }
         }
     }
