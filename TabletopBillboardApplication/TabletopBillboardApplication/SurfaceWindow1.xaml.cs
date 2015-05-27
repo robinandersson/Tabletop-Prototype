@@ -29,7 +29,7 @@ namespace TabletopBillboardApplication
         /// </summary>
         private ScatterViewItem svi;
         private ScatterView scatter;
-        List<PosterData> events;
+        List<EventData> events;
         private List<String> tagsOnSurface = new List<String>(); 
         public SurfaceWindow1()
         {
@@ -45,7 +45,7 @@ namespace TabletopBillboardApplication
 
             screenHolder.Content = scatter;
 
-            events = new List<PosterData>();
+            events = new List<EventData>();
             // load text
             LoadText(events);
             setSize(events);
@@ -59,17 +59,17 @@ namespace TabletopBillboardApplication
 
         }
 
-        private void setSize(List<PosterData> events)
+        private void setSize(List<EventData> events)
         {
             int num = 0;
             DateTime today = DateTime.Today;
             DateTime tempToday = DateTime.Today;
             int length = events.Count;
             while (length > num+1){
-                DateTime posterDay = events.ElementAt(num).getDate();
+                DateTime EventDay = events.ElementAt(num).getDate();
                 int size = 2; //dice 2, further than a month away
-                int compare = DateTime.Compare(posterDay, today);
-                if (compare == 0) { // posters of today
+                int compare = DateTime.Compare(EventDay, today);
+                if (compare == 0) { // Events of today
                     size = 6;
                 }
                 else {
@@ -79,13 +79,13 @@ namespace TabletopBillboardApplication
                     else {              //dice 4, within 10 days
                         tempToday = DateTime.Today; 
                         tempToday = tempToday.AddDays(10);
-                        if (DateTime.Compare(posterDay, tempToday) < 0) {
+                        if (DateTime.Compare(EventDay, tempToday) < 0) {
                             size = 4;
                         }
                         else {          //dice 3, further than 10 days, but within a month 
                             tempToday = DateTime.Today;
                             tempToday = tempToday.AddDays(30);
-                            if (DateTime.Compare(posterDay, tempToday) < 0){
+                            if (DateTime.Compare(EventDay, tempToday) < 0){
                                 size = 3;
                             }
                         }
@@ -191,7 +191,7 @@ namespace TabletopBillboardApplication
         }
         
         // load images from source
-        void LoadImages(List<PosterData> events)
+        void LoadImages(List<EventData> events)
         {
             string envDir = Environment.CurrentDirectory;
             string[] fileNames = Directory.GetFiles(envDir+@"\Resources\Posters", "*.jpg");
@@ -260,7 +260,7 @@ namespace TabletopBillboardApplication
         }
 
         // load text from source
-        private List<PosterData> LoadText(List<PosterData> events)
+        private List<EventData> LoadText(List<EventData> events)
         {
             try
             {
@@ -286,7 +286,7 @@ namespace TabletopBillboardApplication
                             line = String.Concat(line,line0);
                             line0 = sr.ReadLine();
                         }
-                        events.Add(new PosterData(name, date, tag, line));
+                        events.Add(new EventData(name, date, tag, line));
                         name = sr.ReadLine();
                     }
                 }
@@ -300,14 +300,14 @@ namespace TabletopBillboardApplication
         }
 
         // class to ask for data per image
-        private class PosterData
+        private class EventData
         {
             private List<String> type;
             private String text, name;
             private DateTime date;
             private int size = 0;
 
-            public PosterData(String name, DateTime date, List<String> type, String text){
+            public EventData(String name, DateTime date, List<String> type, String text){
                 this.name = name;
                 this.date = date;
                 this.type = type;
@@ -437,7 +437,7 @@ namespace TabletopBillboardApplication
                 // display the events that matches a tag
                 foreach (ScatterViewItem svi in scatter.Items)
                 {
-                    PosterData eventData = svi.Tag as PosterData;
+                    EventData eventData = svi.Tag as EventData;
                     bool tagPresent = false;
                     foreach (string eventTag in eventData.getTags())
                     {
