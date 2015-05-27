@@ -1,13 +1,12 @@
 ﻿<s:SurfaceWindow x:Class="TabletopBillboardApplication.SurfaceWindow1"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:s="http://schemas.microsoft.com/surface/2008" 
-    xmlns:customUserControl="clr-namespace:TabletopBillboardApplication;assembly=TabletopBillboardApplication"
+    xmlns:s="http://schemas.microsoft.com/surface/2008"
     Title="TabletopBillboardApplication"
     WindowState="Maximized"
     WindowStyle="None"
     >
-    <!--xmlns:customUserControl="clr-namespace:TabletopBillboardApplication;assembly=TabletopBillboardApplication"-->
+    
     <Grid>
         <Grid.Background>
             <ImageBrush ImageSource="Resources/SlottskogenZoom.jpg"/>
@@ -25,12 +24,7 @@
             
         </s:TagVisualizer>
 
-        <s:ScatterView x:Name="scatter">
-            <s:ScatterViewItem Height="220" Width="220" Background="Transparent">
-                <customUserControl:MyUserControl x:Name="test" Background="Transparent"/>
-            </s:ScatterViewItem>
-        </s:ScatterView>
-
+        <s:ScatterView x:Name="scatter" />
     </Grid>
     
     
