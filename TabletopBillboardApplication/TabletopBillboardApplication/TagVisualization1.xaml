@@ -5,11 +5,8 @@
     Loaded="TagVisualization1_Loaded"
     Height="400" Width="400" >
     <Grid>
-        <Ellipse Name="myEllipse"
-                 HorizontalAlignment="Stretch"
-                 VerticalAlignment="Stretch"/>
-        <Label Name="CameraModel" 
-               Content="Model" 
+        <Label Name="EventType" 
+               Content="Type" 
                HorizontalAlignment="Center" 
                VerticalAlignment="Center"/>
     </Grid>

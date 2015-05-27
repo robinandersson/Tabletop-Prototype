@@ -351,13 +351,13 @@ namespace TabletopBillboardApplication
                 tagDef.Source =
                     new Uri("TagVisualization1.xaml", UriKind.Relative);
                 // The maximum number for this tag value.
-                tagDef.MaxCount = 2;
-                // The visualization stays for 2 seconds.
-                tagDef.LostTagTimeout = 2000.0;
+                tagDef.MaxCount = 1;
+                // The visualization stays for 0,5 seconds.
+                tagDef.LostTagTimeout = 500.0;
                 // Orientation offset (default).
                 tagDef.OrientationOffsetFromTag = 0.0;
                 // Physical offset (horizontal inches, vertical inches).
-                tagDef.PhysicalCenterOffsetFromTag = new Vector(2.0, 2.0);
+                tagDef.PhysicalCenterOffsetFromTag = new Vector(1.0, 1.0);
                 // Tag removal behavior (default).
                 tagDef.TagRemovedBehavior = TagRemovedBehavior.Fade;
                 // Orient UI to tag? (default).
@@ -375,21 +375,20 @@ namespace TabletopBillboardApplication
             {
                 case 1:
                     tagsOnSurface.Add("music");
+                    tag.EventType.Content = "Music";
                     break;
                 case 2:
                     tagsOnSurface.Add("sport");
+                    tag.EventType.Content = "Sport";
                     break;
                 case 3:
-                    tag.CameraModel.Content = "Fabrikam, Inc. GHI-56";
-                    tag.myEllipse.Fill = SurfaceColors.Accent3Brush;
+                    tag.EventType.Content = "No type yet";
                     break;
                 case 4:
-                    tag.CameraModel.Content = "Fabrikam, Inc. JKL-78";
-                    tag.myEllipse.Fill = SurfaceColors.Accent4Brush;
+                    tag.EventType.Content = "No type yet";
                     break;
                 default:
-                    tag.CameraModel.Content = "UNKNOWN MODEL";
-                    tag.myEllipse.Fill = SurfaceColors.ControlAccentBrush;
+                    tag.EventType.Content = "Not a valid tag";
                     break;
 
             }
@@ -411,16 +410,10 @@ namespace TabletopBillboardApplication
                     tagsOnSurface.Remove("sport");
                     break;
                 case 3:
-                    tag.CameraModel.Content = "Fabrikam, Inc. GHI-56";
-                    tag.myEllipse.Fill = SurfaceColors.Accent3Brush;
                     break;
                 case 4:
-                    tag.CameraModel.Content = "Fabrikam, Inc. JKL-78";
-                    tag.myEllipse.Fill = SurfaceColors.Accent4Brush;
                     break;
                 default:
-                    tag.CameraModel.Content = "UNKNOWN MODEL";
-                    tag.myEllipse.Fill = SurfaceColors.ControlAccentBrush;
                     break;
 
             }
@@ -439,8 +432,7 @@ namespace TabletopBillboardApplication
                 }
 
 
-            }
-            else
+            }else
             {
 
                 // display the events that matches a tag
