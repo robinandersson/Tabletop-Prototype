@@ -215,10 +215,76 @@ namespace TabletopBillboardApplication
                 }
 
                 svi.AddHandler(TouchExtensions.TapGestureEvent, new RoutedEventHandler(OnPosterTap), true);
+                svi.PreviewTouchDown += new EventHandler<TouchEventArgs>(img_PreviewTouchDown);
                 scatter.Items.Add(svi);
                 num2++;
             }
         }
+
+        void img_PreviewTouchDown(object sender, TouchEventArgs e)
+        {
+
+            var element = sender as ContentControl;
+            //sender. = Visibility.Hidden;
+            Double x = 0;
+            Double y = 0;
+            if (element != null)
+            {
+                var location = element.PointToScreen(new Point(0, 0));
+                x = location.X;
+                y = location.Y;
+
+            }
+            ScatterViewItem item = (ScatterViewItem)sender;
+            Image img = (Image)item.Content;
+            item.Visibility = Visibility.Hidden;
+
+            svi = new ScatterViewItem();
+            //string name = (string)img.Tag;
+            //MessageBox.Show(name);
+            Image img1 = new Image();
+            img1.Source = img.Source.Clone();
+            Canvas can = new Canvas();
+            ImageBrush ib = new ImageBrush();
+            String dir = Environment.CurrentDirectory;
+            String imagePath = dir + @"\Resources\background\plain-hd-wallpapers.jpg";
+            ib.ImageSource = new BitmapImage(new Uri(imagePath, UriKind.Relative));
+            can.Background = ib;
+
+            Label lab1 = new Label();
+            lab1.Content = "Description of this image";
+
+            Canvas.SetRight(img1, 20);
+            Canvas.SetLeft(img1, 20);
+            Canvas.SetTop(img1, 20);
+            Canvas.SetBottom(img1, 20);
+            can.Children.Add(img1);
+
+            Canvas.SetRight(lab1, 100);
+            Canvas.SetLeft(lab1, 100);
+            Canvas.SetTop(lab1, 100);
+            Canvas.SetBottom(lab1, 100);
+            can.Children.Add(lab1);
+            can.Width = 500;
+            can.Height = 500;
+            svi.Content = can;
+            svi.Center = new Point(x + 100, y + 100);
+            //svi.Width = img1.Width;
+            //svi.Height = img1.Height*2;
+
+
+            scatter.Items.Add(svi);
+
+            //foreach (Object obj in scatter.Items){
+            //    ScatterViewItem sv = scatter.ItemContainerGenerator.ContainerFromItem(obj) as ScatterViewItem;
+            //    if (sv.Content.GetType().Equals(typeof(Canvas)))
+            //    {
+            //        scatter.Items.RemoveAt(1);
+            //    }
+            //}
+            //scatter.Items.RemoveAt(1);
+        }
+
 
         void OnPosterTap(object sender, RoutedEventArgs e)
         {
