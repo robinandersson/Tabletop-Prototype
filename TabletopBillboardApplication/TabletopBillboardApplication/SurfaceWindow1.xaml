@@ -8,8 +8,10 @@
     >
     
     <Grid>
-        
-        
+        <Grid.Background>
+            <ImageBrush ImageSource="Resources/SlottskogenZoom.jpg"/>
+        </Grid.Background>
+
         <s:TagVisualizer 
             Name="MyTagVisualizer" 
             VerticalAlignment="Stretch"
