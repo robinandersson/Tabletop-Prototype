@@ -57,6 +57,11 @@ namespace TabletopBillboardApplication
                 ScatterViewItem svi = scatter.ItemContainerGenerator.ContainerFromItem(obj) as ScatterViewItem;
             }
 
+            //add custom user control
+            MyUserControl uc = new MyUserControl();
+            ScatterViewItem item = new ScatterViewItem();
+            item.Content = uc;
+            scatter.Items.Add(item);
         }
 
         private void setSize(List<EventData> events)
