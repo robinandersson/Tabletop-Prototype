@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
+
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -16,6 +17,7 @@ using Microsoft.Surface.Presentation;
 using Microsoft.Surface.Presentation.Controls;
 using Microsoft.Surface.Presentation.Input;
 using System.IO;
+
 
 namespace TabletopBillboardApplication
 {
@@ -194,13 +196,13 @@ namespace TabletopBillboardApplication
         {
             string envDir = Environment.CurrentDirectory;
             string[] fileNames = Directory.GetFiles(envDir+@"\Resources\Posters", "*.jpg");
-            int num2 = 0;
+            int num = 0;
             foreach (string name in fileNames)
             {
                 Image img = new Image();
                 img.Source = new BitmapImage(new Uri(name, UriKind.Absolute));
-                int size = events.ElementAt(num2).getSize();
-                img.Tag = events.ElementAt(num2);
+                int size = events.ElementAt(num).getSize();
+                img.Tag = events.ElementAt(num);
                                 
                 svi = new ScatterViewItem();
                 svi.Content = img;
@@ -214,11 +216,150 @@ namespace TabletopBillboardApplication
                     svi.Height = scale * size;
                 }
 
-                svi.AddHandler(TouchExtensions.TapGestureEvent, new RoutedEventHandler(OnPosterTap), true);
+                if (size == 1)
+                {
+                    svi.Visibility = Visibility.Hidden;
+                }
+
+                //svi.AddHandler(TouchExtensions.TapGestureEvent, new RoutedEventHandler(OnPosterTap), true);
+                
+                svi.PreviewTouchDown += new EventHandler<TouchEventArgs>(img_PreviewTouchDown);
+
                 scatter.Items.Add(svi);
-                num2++;
+                num++;
             }
         }
+
+        void img_PreviewTouchDown(object sender, TouchEventArgs e)
+        {
+            var element = sender as ContentControl;
+            Double x = 0;
+            Double y = 0;
+            if (element != null)
+            {
+                var location = element.PointToScreen(new Point(0, 0));
+                x = location.X;
+                y = location.Y;
+            }
+            
+            ScatterViewItem item = (ScatterViewItem)sender;
+            item.Visibility = Visibility.Hidden;
+            Image img = (Image)item.Content;
+            
+            EventData eventData = (EventData)img.Tag;
+
+            svi = new ScatterViewItem();
+            Image img1 = new Image();
+            img1.Source = img.Source.Clone();
+           
+            Canvas canvas = new Canvas();
+            SetPosterBackground(canvas);
+            
+            ScatterViewItem addi = new ScatterViewItem();
+            SetScatterView(addi, img1);
+            canvas.Children.Add(addi);
+
+            Button closeButton = new Button();
+            SetCloseButton(closeButton, svi, item);
+
+            StackPanel sp = new StackPanel
+            {
+                Orientation = Orientation.Vertical,
+                
+                Children =
+                {
+                    closeButton,
+                    
+                    new Label
+                    {
+                        Content = "   ",
+                    },
+                    new Label
+                    {
+                        Content = eventData.getName(),
+                    },
+                    new Border
+                    {
+                        Height = 2,
+                        Background = Brushes.Yellow, // Set background here
+                    },
+
+                    new Label
+                    {
+                        Content = "Data: "+ eventData.getDate().ToString(),
+                    },
+
+                    new Label 
+                    {                       
+                        Content = eventData.getText(),
+                        //Background = Brushes.Pink, // Set background here
+                    }
+                }
+            };
+ 
+            svi.Content = canvas;
+            if (addi.Width > addi.Height)
+            {
+                svi.Width = addi.Width;
+                svi.Height = addi.Height * 2;
+                sp.Width = addi.Width;
+                sp.Height= addi.Height * 2;
+                Canvas.SetTop(sp, addi.Height);             
+            }
+            else
+            {
+                svi.Width = addi.Width * 2;
+                svi.Height = addi.Height;
+                sp.Width = addi.Width;
+                sp.Height = addi.Height * 2;
+                Canvas.SetLeft(sp, addi.Width);
+            }
+
+            canvas.Children.Add(sp);
+            svi.Center = new Point(x, y);
+            scatter.Items.Add(svi);
+            
+        }
+
+        void btn_CloseClick(object sender, RoutedEventArgs e)
+        {
+            Button b = (Button) sender;
+            List<ScatterViewItem> scas = (List<ScatterViewItem>)b.Tag;
+            scas.ElementAt(0).Visibility = Visibility.Hidden;
+            scas.ElementAt(1).Visibility = Visibility.Visible;
+
+        }
+
+        void SetCloseButton(Button closeButton, ScatterViewItem svi, ScatterViewItem item)
+        {
+            closeButton.Content = "close";
+
+            List<ScatterViewItem> scas = new List<ScatterViewItem>();
+            scas.Add(svi);
+            scas.Add(item);
+            closeButton.Tag = scas;
+            //closeButton.AddHandler(Button.ClickEvent, new RoutedEventHandler(btn_CloseClick));
+            closeButton.PreviewTouchDown += new EventHandler<TouchEventArgs>(btn_CloseClick);
+        }
+
+        void SetScatterView(ScatterViewItem addi, Image img)
+        {
+            int scale = (int)(100 * (img.Source.Width) / img.Source.Height);
+            addi.Height = 100 * 4;
+            addi.Width = scale * 4;
+            addi.Content = img;
+        }
+
+
+        void SetPosterBackground(Canvas canvas)
+        {
+            ImageBrush ib = new ImageBrush();
+            String dir = Environment.CurrentDirectory;
+            String imagePath = dir + @"\Resources\background\plain-hd-wallpapers.jpg";
+            ib.ImageSource = new BitmapImage(new Uri(imagePath, UriKind.Relative));
+            canvas.Background = ib;
+        }
+
 
         void OnPosterTap(object sender, RoutedEventArgs e)
         {

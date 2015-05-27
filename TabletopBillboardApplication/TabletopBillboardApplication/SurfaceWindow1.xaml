@@ -21,7 +21,12 @@
             
         </s:TagVisualizer>
 
-        <ContentControl x:Name="screenHolder" />
+        <ContentControl x:Name="screenHolder">
+
+        </ContentControl> 
+                       
+        
+        
     </Grid>
     
     
