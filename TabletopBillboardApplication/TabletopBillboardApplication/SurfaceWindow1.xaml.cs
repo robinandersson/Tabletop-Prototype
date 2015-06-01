@@ -432,7 +432,6 @@ namespace TabletopBillboardApplication
             scatter.Items.Remove(s1);
             ScatterViewItem s2 = (ScatterViewItem)scas.ElementAt(5);
             s2.Visibility = Visibility.Visible;
-            scatter.Items.Remove(s2);
 
             ScatterViewItem s3 = (ScatterViewItem)scas.ElementAt(6);
             s3.Visibility = Visibility.Hidden;
