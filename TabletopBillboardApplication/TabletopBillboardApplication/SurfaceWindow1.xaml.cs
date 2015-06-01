@@ -217,21 +217,22 @@ namespace TabletopBillboardApplication
                 }
 
 
-                //svi.AddHandler(TouchExtensions.TapGestureEvent, new RoutedEventHandler(OnPosterTap), true);
+                svi.AddHandler(TouchExtensions.TapGestureEvent, new RoutedEventHandler(img_PreviewTouchDown), true);
                 
-                svi.PreviewTouchDown += new EventHandler<TouchEventArgs>(img_PreviewTouchDown);
-
+                //svi.PreviewTouchDown += new EventHandler<TouchEventArgs>(img_PreviewTouchDown);
+                
+                
                 scatter.Items.Add(svi);
                 num++;
             }
         }
 
-        void img_PreviewTouchDown(object sender, TouchEventArgs e)
+        void img_PreviewTouchDown(object sender, RoutedEventArgs e)
         {
-            TouchDevice c = e.TouchDevice;
+            //TouchDevice c = e.;
             
-            if (c.GetIsFingerRecognized() == true)
-            {
+            //if (c.GetIsFingerRecognized() == true)
+            //{
                 var element = sender as ContentControl;
                 Double x = 0;
                 Double y = 0;
@@ -379,7 +380,7 @@ namespace TabletopBillboardApplication
                 LineHost.Children.Add(line2);
                 LineHost.Children.Add(line3);
                 LineHost.Children.Add(line4);
-            }
+            
         }
 
         private void BindLineToScatterViewItems(Line line, ScatterViewItem origin,
@@ -647,7 +648,7 @@ namespace TabletopBillboardApplication
         private void OnVisualizationAdded(object sender, TagVisualizerEventArgs e)
         {
             TagVisualization1 tag = (TagVisualization1)e.TagVisualization;
-            ScatterViewItem item = null;
+
             switch (tag.VisualizedTag.Value)
             {
                 case 1:
