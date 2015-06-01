@@ -204,6 +204,7 @@ namespace TabletopBillboardApplication
                 img.Tag = events.ElementAt(num);
                                 
                 svi = new ScatterViewItem();
+                svi.Tag = events.ElementAt(num);
                 svi.Content = img;
                 int scale = (int)(100 * (img.Source.Width) / img.Source.Height);
                 svi.Height = 100 * size;
@@ -227,47 +228,49 @@ namespace TabletopBillboardApplication
 
         void img_PreviewTouchDown(object sender, TouchEventArgs e)
         {
-            var element = sender as ContentControl;
-            Double x = 0;
-            Double y = 0;
-            if (element != null)
+            TouchDevice c = e.TouchDevice;
+            
+            if (c.GetIsFingerRecognized() == true)
             {
-                var location = element.PointToScreen(new Point(0, 0));
-                x = location.X;
-                y = location.Y;
-            }
-            
-            ScatterViewItem item = (ScatterViewItem)sender;
-            item.Visibility = Visibility.Hidden;
-            Image img = (Image)item.Content;
-            
-            EventData eventData = (EventData)img.Tag;
+                var element = sender as ContentControl;
+                Double x = 0;
+                Double y = 0;
+                if (element != null)
+                {
+                    var location = element.PointToScreen(new Point(0, 0));
+                    x = location.X;
+                    y = location.Y;
+                }
 
-            svi = new ScatterViewItem();
-            Image img1 = new Image();
-            img1.Source = img.Source.Clone();
-           
-            Canvas canvas = new Canvas();
-            //SetPosterBackground(canvas);
-            
-            ScatterViewItem addi = new ScatterViewItem();
-            SetScatterView(addi, img1);
-            canvas.Children.Add(addi);
+                ScatterViewItem item = (ScatterViewItem)sender;
+                item.Visibility = Visibility.Hidden;
+                Image img = (Image)item.Content;
 
-            Button closeButton = new Button();
-            SetCloseButton(closeButton, svi, item);
+                EventData eventData = (EventData)img.Tag;
 
-            StackPanel sp = new StackPanel
-            {
-                Orientation = Orientation.Vertical,
+                svi = new ScatterViewItem();
+                Image img1 = new Image();
+                img1.Source = img.Source.Clone();
+
+                Canvas canvas = new Canvas();
+                //SetPosterBackground(canvas);
+
+                ScatterViewItem addi = new ScatterViewItem();
+                SetScatterView(addi, img1);
+                canvas.Children.Add(addi);
+                Button closeButton = new Button();
                 
-                Children =
+                StackPanel sp = new StackPanel
+                {
+                    Orientation = Orientation.Vertical,
+
+                    Children =
                 {
                     closeButton,
-                    
                     new Label
                     {
                         Content = "   ",
+                        
                     },
                     new Label
                     {
@@ -291,50 +294,180 @@ namespace TabletopBillboardApplication
                         Content = eventData.getText(),
                         Foreground = System.Windows.Media.Brushes.Black,
                         //Background = Brushes.Pink, // Set background here
-                    }
+                    },
+                    
                 }
-            };
- 
-            svi.Content = canvas;
-            if (addi.Width > addi.Height)
-            {
-                svi.Width = addi.Width;
-                svi.Height = addi.Height * 2;
-                sp.Width = addi.Width;
-                sp.Height= addi.Height * 2;
-                Canvas.SetTop(sp, addi.Height);             
-            }
-            else
-            {
-                svi.Width = addi.Width * 2;
-                svi.Height = addi.Height;
-                sp.Width = addi.Width;
-                sp.Height = addi.Height * 2;
-                Canvas.SetLeft(sp, addi.Width);
-            }
+                };
 
-            canvas.Children.Add(sp);
-            svi.Center = new Point(x, y);
-            scatter.Items.Add(svi);
-            
+                svi.Content = canvas;
+                if (addi.Width > addi.Height)
+                {
+                    svi.Width = addi.Width;
+                    svi.Height = addi.Height * 2;
+                    sp.Width = addi.Width;
+                    sp.Height = addi.Height * 2;
+                    Canvas.SetTop(sp, addi.Height);
+                }
+                else
+                {
+                    svi.Width = addi.Width * 2;
+                    svi.Height = addi.Height;
+                    sp.Width = addi.Width;
+                    sp.Height = addi.Height * 2;
+                    Canvas.SetLeft(sp, addi.Width);
+                }
+
+               
+                canvas.Children.Add(sp);
+                svi.Center = new Point(x, y);
+
+                
+                
+                String dir = Environment.CurrentDirectory;
+
+                ScatterViewItem a = new ScatterViewItem();
+                a.Center = new Point(x - svi.ActualWidth / 2 - 300, y + svi.ActualHeight + 300);              
+                String imagePath1 = dir + @"\Resources\More-images\image 1.jpg";
+                Image img_1 = new Image();
+                img_1.Source = new BitmapImage(new Uri(imagePath1, UriKind.Absolute));
+                SetScatterView1(a, img_1);
+                Line line = new Line { Stroke = Brushes.Black, StrokeThickness = 2.0 };
+                BindLineToScatterViewItems(line, svi, a);
+
+                ScatterViewItem b = new ScatterViewItem();
+                b.Center = new Point(x - svi.ActualWidth / 2 - 300, y - svi.ActualHeight - 300);
+                b.Width = 200;
+                b.Height = 200;
+                String imagePath2 = dir + @"\Resources\More-images\image 2.jpg";
+                Image img_2 = new Image();
+                img_2.Source = new BitmapImage(new Uri(imagePath2, UriKind.Absolute));
+                SetScatterView1(b, img_2);
+                Line line2 = new Line { Stroke = Brushes.Black, StrokeThickness = 2.0 };
+                BindLineToScatterViewItems(line2, svi, b);
+
+                ScatterViewItem c1 = new ScatterViewItem();
+                c1.Center = new Point(x + svi.ActualWidth / 2 + 300, y + svi.ActualHeight + 300);
+                c1.Width = 200;
+                c1.Height = 200;
+                String imagePath3 = dir + @"\Resources\More-images\image 3.jpg";
+                Image img_3 = new Image();
+                img_3.Source = new BitmapImage(new Uri(imagePath3, UriKind.Absolute)); 
+                SetScatterView1(c1, img_3);
+                Line line3 = new Line { Stroke = Brushes.Black, StrokeThickness = 2.0 };
+                BindLineToScatterViewItems(line3, svi, c1);
+
+                ScatterViewItem d = new ScatterViewItem();
+                d.Center = new Point(x + svi.ActualWidth / 2 + 300, y - svi.ActualHeight - 300);
+                d.Width = 200;
+                d.Height = 200;
+                String imagePath4 = dir + @"\Resources\More-images\image 4.jpg";
+                Image img_4 = new Image();
+                img_4.Source = new BitmapImage(new Uri(imagePath4, UriKind.Absolute));
+                SetScatterView1(d, img_4);
+                Line line4 = new Line { Stroke = Brushes.Black, StrokeThickness = 2.0 };
+                BindLineToScatterViewItems(line4, svi, d);
+
+                SetCloseButton(closeButton,line, line2, line3, line4, svi, item, a, b, c1, d);
+               
+                scatter.Items.Add(svi);
+                scatter.Items.Add(a);
+                scatter.Items.Add(b);
+                scatter.Items.Add(c1);
+                scatter.Items.Add(d);
+
+                LineHost.Children.Add(line);
+                LineHost.Children.Add(line2);
+                LineHost.Children.Add(line3);
+                LineHost.Children.Add(line4);
+            }
+        }
+
+        private void BindLineToScatterViewItems(Line line, ScatterViewItem origin,
+    ScatterViewItem destination)
+        {
+            // Bind line.(X1,Y1) to origin.ActualCenter  
+            BindingOperations.SetBinding(line, Line.X1Property, new Binding
+            {
+                Source = origin,
+                Path = new PropertyPath("ActualCenter.X")
+            });
+            BindingOperations.SetBinding(line, Line.Y1Property, new Binding
+            {
+                Source = origin,
+                Path = new PropertyPath("ActualCenter.Y")
+            });
+
+            // Bind line.(X2,Y2) to destination.ActualCenter  
+            BindingOperations.SetBinding(line, Line.X2Property, new Binding
+            {
+                Source = destination,
+                Path = new PropertyPath("ActualCenter.X")
+            });
+            BindingOperations.SetBinding(line, Line.Y2Property, new Binding
+            {
+                Source = destination,
+                Path = new PropertyPath("ActualCenter.Y")
+            });
         }
 
         void btn_CloseClick(object sender, RoutedEventArgs e)
         {
             Button b = (Button) sender;
-            List<ScatterViewItem> scas = (List<ScatterViewItem>)b.Tag;
-            scas.ElementAt(0).Visibility = Visibility.Hidden;
-            scas.ElementAt(1).Visibility = Visibility.Visible;
+            List<Object> scas = (List<Object>)b.Tag;
+            Line a = (Line)scas.ElementAt(0);
+            a.Visibility = Visibility.Hidden;
+            LineHost.Children.Remove(a);
+            Line a1 = (Line)scas.ElementAt(1);
+            a1.Visibility = Visibility.Hidden;
+            LineHost.Children.Remove(a1);
+            Line a2 = (Line)scas.ElementAt(2);
+            a2.Visibility = Visibility.Hidden;
+            LineHost.Children.Remove(a2);
+            Line a3 = (Line)scas.ElementAt(3);
+            a3.Visibility = Visibility.Hidden;
+            LineHost.Children.Remove(a3);
+
+            ScatterViewItem s1 = (ScatterViewItem)scas.ElementAt(4);
+            s1.Visibility = Visibility.Hidden;
+            scatter.Items.Remove(s1);
+            ScatterViewItem s2 = (ScatterViewItem)scas.ElementAt(5);
+            s2.Visibility = Visibility.Visible;
+            scatter.Items.Remove(s2);
+
+            ScatterViewItem s3 = (ScatterViewItem)scas.ElementAt(6);
+            s3.Visibility = Visibility.Hidden;
+            scatter.Items.Remove(s3);
+
+            ScatterViewItem s4 = (ScatterViewItem)scas.ElementAt(7);
+            s4.Visibility = Visibility.Hidden;
+            scatter.Items.Remove(s4);
+
+            ScatterViewItem s5 = (ScatterViewItem)scas.ElementAt(8);
+            s5.Visibility = Visibility.Hidden;
+            scatter.Items.Remove(s5);
+
+            ScatterViewItem s6 = (ScatterViewItem)scas.ElementAt(9);
+            s6.Visibility = Visibility.Hidden;
+            scatter.Items.Remove(s6);
 
         }
 
-        void SetCloseButton(Button closeButton, ScatterViewItem svi, ScatterViewItem item)
+        void SetCloseButton(Button closeButton, Line l, Line l2, Line l3, Line l4, ScatterViewItem svi, ScatterViewItem item, 
+                           ScatterViewItem a,  ScatterViewItem b,  ScatterViewItem c, ScatterViewItem d)
         {
             closeButton.Content = "close";
 
-            List<ScatterViewItem> scas = new List<ScatterViewItem>();
+            List<Object> scas = new List<Object>();
+            scas.Add(l);
+            scas.Add(l2);
+            scas.Add(l3);
+            scas.Add(l4);
             scas.Add(svi);
             scas.Add(item);
+            scas.Add(a);
+            scas.Add(b);
+            scas.Add(c);
+            scas.Add(d);
             closeButton.Tag = scas;
             //closeButton.AddHandler(Button.ClickEvent, new RoutedEventHandler(btn_CloseClick));
             closeButton.PreviewTouchDown += new EventHandler<TouchEventArgs>(btn_CloseClick);
@@ -345,6 +478,14 @@ namespace TabletopBillboardApplication
             int scale = (int)(100 * (img.Source.Width) / img.Source.Height);
             addi.Height = 100 * 4;
             addi.Width = scale * 4;
+            addi.Content = img;
+        }
+
+        void SetScatterView1(ScatterViewItem addi, Image img)
+        {
+            int scale = (int)(100 * (img.Source.Width) / img.Source.Height);
+            addi.Height = 100 * 2;
+            addi.Width = scale * 2;
             addi.Content = img;
         }
 
@@ -507,7 +648,7 @@ namespace TabletopBillboardApplication
         private void OnVisualizationAdded(object sender, TagVisualizerEventArgs e)
         {
             TagVisualization1 tag = (TagVisualization1)e.TagVisualization;
-
+            ScatterViewItem item = null;
             switch (tag.VisualizedTag.Value)
             {
                 case 1:

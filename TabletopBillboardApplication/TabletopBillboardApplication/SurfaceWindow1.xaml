@@ -7,10 +7,7 @@
     WindowStyle="None"
     >
     
-    <Grid>
-        <Grid.Background>
-            <ImageBrush ImageSource="Resources/SlottskogenZoom.jpg"/>
-        </Grid.Background>
+    
 
         <s:TagVisualizer 
             Name="MyTagVisualizer" 
@@ -21,12 +18,14 @@
             VisualizationAdded="OnVisualizationAdded"
             VisualizationRemoved="OnVisualizationRemoved"
             >
-            
-        </s:TagVisualizer>
-
-        <s:ScatterView x:Name="scatter" />
-    </Grid>
-    
+        <Grid>
+            <Grid.Background>
+                <ImageBrush ImageSource="Resources/SlottskogenZoom.jpg"/>
+            </Grid.Background>
+            <Canvas x:Name="LineHost"/>
+            <s:ScatterView x:Name="scatter" />
+        </Grid>
+    </s:TagVisualizer>
     
     
 </s:SurfaceWindow>
