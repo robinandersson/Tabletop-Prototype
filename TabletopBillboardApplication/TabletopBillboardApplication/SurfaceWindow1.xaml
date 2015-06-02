@@ -23,7 +23,7 @@
             >
             
         </s:TagVisualizer>
-
+  	    <Canvas x:Name="LineHost"/>
         <s:ScatterView x:Name="scatter">
             <s:ScatterViewItem Name="svi_MainButton" CanScale="False" Height="300" Width="300" Background="Transparent"/>
         </s:ScatterView>
