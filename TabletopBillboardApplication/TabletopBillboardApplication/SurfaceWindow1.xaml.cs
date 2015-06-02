@@ -16,6 +16,7 @@ using Microsoft.Surface.Presentation;
 using Microsoft.Surface.Presentation.Controls;
 using Microsoft.Surface.Presentation.Input;
 using System.IO;
+using System.Diagnostics;
 
 namespace TabletopBillboardApplication
 {
@@ -30,7 +31,9 @@ namespace TabletopBillboardApplication
         private ScatterViewItem svi;
         //private ScatterView scatter;
         List<EventData> events;
-        private List<String> tagsOnSurface = new List<String>(); 
+        private List<String> tagsOnSurface = new List<String>();
+        private DateTime[] date;
+
         public SurfaceWindow1()
         {
             InitializeComponent();
@@ -48,45 +51,52 @@ namespace TabletopBillboardApplication
             events = new List<EventData>();
             // load text
             LoadText(events);
-            setSize(events);
+            setSize(events, DateTime.Today);
             // load image
             LoadImages(events);
+            date = getOldestNewestEventDate();
 
             foreach (object obj in scatter.Items)
             {
                 ScatterViewItem svi = scatter.ItemContainerGenerator.ContainerFromItem(obj) as ScatterViewItem;
             }
+            MyUserControl mainButton = new MyUserControl();
+            mainButton.timeValueSelectedHandler += new MyUserControl.TimeValueSelectedEventHandler(mainButton_timeValueSelectedHandler);
+            svi_MainButton.Content = mainButton;
 
         }
 
-        private void setSize(List<EventData> events)
+        private void setSize(List<EventData> events, DateTime today)
         {
             int num = 0;
-            DateTime today = DateTime.Today;
-            DateTime tempToday = DateTime.Today;
+            DateTime tempToday = today;
             int length = events.Count;
             while (length > num+1){
                 DateTime EventDay = events.ElementAt(num).getDate();
-                int size = 2; //dice 2, further than a month away
+                int size = 1; //size 1, further than a month away, and old ones
                 int compare = DateTime.Compare(EventDay, today);
                 if (compare == 0) { // Events of today
                     size = 6;
                 }
-                else {
-                    if(compare < 0) {   // posters from the past
-                        size = 1;
+                if (compare >0) {              //size 4, within 10 days
+                    tempToday = DateTime.Today; 
+                    tempToday = tempToday.AddDays(10);
+                    if (DateTime.Compare(EventDay, tempToday) < 0) {
+                        size = 4;
                     }
-                    else {              //dice 4, within 10 days
-                        tempToday = DateTime.Today; 
-                        tempToday = tempToday.AddDays(10);
-                        if (DateTime.Compare(EventDay, tempToday) < 0) {
-                            size = 4;
+                    else {          //size 3, further than 10 days, but within a month 
+                        tempToday = DateTime.Today;
+                        tempToday = tempToday.AddDays(30);
+                        if (DateTime.Compare(EventDay, tempToday) < 0){
+                            size = 3;
                         }
-                        else {          //dice 3, further than 10 days, but within a month 
+                        else
+                        {//size 2, further than 10 days, but within half a year
                             tempToday = DateTime.Today;
-                            tempToday = tempToday.AddDays(30);
-                            if (DateTime.Compare(EventDay, tempToday) < 0){
-                                size = 3;
+                            tempToday = tempToday.AddDays(183);
+                            if (DateTime.Compare(EventDay, tempToday) < 0)
+                            {
+                                size = 2;
                             }
                         }
                     }
@@ -200,11 +210,30 @@ namespace TabletopBillboardApplication
             {
                 Image img = new Image();
                 img.Source = new BitmapImage(new Uri(name, UriKind.Absolute));
-                int size = events.ElementAt(num2).getSize();
-                                
                 svi = new ScatterViewItem();
                 svi.Tag = events.ElementAt(num2);
                 svi.Content = img;
+                
+                updateSize(svi);
+                
+
+                svi.AddHandler(TouchExtensions.TapGestureEvent, new RoutedEventHandler(OnPosterTap), true);
+                scatter.Items.Add(svi);
+                num2++;
+            }
+        }
+
+        private void updateSize(ScatterViewItem svi)
+        {
+ 	        Image img = (Image)svi.Content;
+            int size = (svi.Tag as EventData).getSize();
+            if (size == 1)
+            {
+                svi.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                svi.Visibility = Visibility.Visible;
                 int scale = (int)(100 * (img.Source.Width) / img.Source.Height);
                 svi.Height = 100 * size;
                 svi.Width = scale * size;
@@ -213,11 +242,7 @@ namespace TabletopBillboardApplication
                     scale = (int)(100 * (img.Source.Height) / img.Source.Width);
                     svi.Width = 100 * size;
                     svi.Height = scale * size;
-                }
-
-                svi.AddHandler(TouchExtensions.TapGestureEvent, new RoutedEventHandler(OnPosterTap), true);
-                scatter.Items.Add(svi);
-                num2++;
+                };
             }
         }
 
@@ -463,6 +488,136 @@ namespace TabletopBillboardApplication
             }
 
             
+        }
+
+        void mainButton_timeValueSelectedHandler(double timeValue)
+        {
+            getOldestNewestEventDate();
+            DateTime newToday = getNewToday(date[0], date[1], DateTime.Today, timeValue);
+            foreach (ScatterViewItem svi in scatter.Items)
+            {
+                EventData eventData = svi.Tag as EventData;
+                if (eventData != null)
+                {
+                    setSize2(eventData, newToday);
+                    updateSize(svi);
+                }
+            }
+        }
+
+
+        private DateTime getNewToday(DateTime old, DateTime newe, DateTime today, Double timeValue)
+        {
+            //difference in days
+            Debug.WriteLine(timeValue);
+            DateTime tempOld = old;
+            DateTime tempToday = today;
+
+            int i = 0;
+            int j = 0;
+            while (DateTime.Compare(tempOld, today) ==-1)
+            {
+                i++;
+                tempOld = old;
+                tempOld = tempOld.AddDays(i);
+                //Debug.WriteLine(String.Concat(old, " + ", i, " = ", today));
+            }
+            while (DateTime.Compare(tempToday, newe) ==-1)
+            {
+                j++;
+                tempToday = today;
+                tempToday = tempToday.AddDays(j);
+                //Debug.WriteLine(String.Concat(today, " + ", j, " = ", newe));
+            }
+
+            //the today depending on in the past or the future
+            DateTime newToday;
+            if(timeValue <= 6){
+                double timeValue1 = Math.Min(3, timeValue);
+                newToday = DateTime.Today;
+                newToday = newToday.AddDays((int)(timeValue1/3*j));
+                Debug.WriteLine(String.Concat("future ", timeValue," ", timeValue1," ", newToday));
+            }
+            else{
+                double timeValue1 = -1*(Math.Max(timeValue-9,0));
+                newToday = DateTime.Today;
+                newToday = newToday.AddDays((int)(timeValue1/3*i));
+                Debug.WriteLine(String.Concat("Past ", timeValue, " ", timeValue1, " ", newToday));
+            }
+            Debug.WriteLine(String.Concat("The new today is ",newToday));
+
+ 	        return newToday;
+        }
+
+        private void setSize2(EventData events, DateTime today)
+        {
+            DateTime tempToday = today;
+            DateTime eDate = events.getDate();
+            
+            int size = 1; //size 1, further than a month away and old ones
+            int compare = DateTime.Compare(eDate, today);
+            if (compare == 0)// Events of today
+                size = 6;
+            if (compare > 0){           //size 4, within 10 days
+                tempToday = today;
+                tempToday = tempToday.AddDays(10);
+                if (DateTime.Compare(eDate, tempToday) < 0)
+                {
+                    size = 4;
+                }
+                else{//size 3, further than 10 days, but within a month
+                    tempToday = today;
+                    tempToday = tempToday.AddDays(30);
+                    if (DateTime.Compare(eDate, tempToday) < 0)
+                    {
+                        size = 3;
+                    }
+                    else
+                    {//size 2, further than a month, but within half a year
+                        tempToday = today;
+                        tempToday = tempToday.AddDays(183);
+                        if (DateTime.Compare(eDate, tempToday) < 0)
+                        {
+                            size = 2;
+                        }
+                    }
+                }
+            } 
+            events.setSize(size);
+        }
+
+        // get the oldest and newest date of the posters in the system
+        DateTime[] getOldestNewestEventDate()
+        {
+            DateTime[] dates = new DateTime[2]; // 0 is oldest event, 1 is newest event
+            int i = 0;
+            foreach (ScatterViewItem svi in scatter.Items)
+            {
+                EventData eventData = svi.Tag as EventData;
+                if (eventData != null)
+                {
+                    DateTime eDate = eventData.getDate();
+                    if (i == 0)
+                    {
+                        dates[0] = eDate;
+                        dates[1] = eDate;
+                    }
+                    else
+                    {
+                        if (DateTime.Compare(dates[0], eDate) == 1) //eDate is earlier than dates[0]
+                        {
+                            dates[0] = eDate;
+                        }
+                        if (DateTime.Compare(dates[1], eDate) == -1) //eDate is later than dates[0]
+                        {
+                            dates[1] = eDate;
+                        }
+                    }
+                    i++;
+                }
+                
+            }
+            return dates;
         }
     }
 }

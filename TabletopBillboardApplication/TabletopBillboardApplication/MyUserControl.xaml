@@ -3,72 +3,181 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:gauge="http://schemas.actiprosoftware.com/winfx/xaml/gauge"
-			 xmlns:shared="http://schemas.actiprosoftware.com/winfx/xaml/shared"
-			 xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:my="clr-namespace:TabletopBillboardApplication"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300"
+             >
+    
     <UserControl.Resources>
-
-        <!-- Converters-->
-        <shared:PercentageConverter x:Key="PercentageConverter" />
-
+        <my:ValueAngleConverter x:Key="valueAngleConverter"/>
+        <my:ValueTextConverter x:Key="valueTextConverter"/>
     </UserControl.Resources>
-
-    <!--<Grid Style="{StaticResource InlineSamplePanelStyle}">-->
     <Grid>
-        <StackPanel Orientation="Horizontal" Background="Transparent">
-
-            <StackPanel>
-
-                <!-- CirularGauge-->
-                <gauge:CircularGauge x:Name="gauge" Width="220" Height="220" Radius="110" HorizontalAlignment="Left"
-							        Background="#333333" RimBrush="#333333" FrameType="CircularOrb" IsBackgroundEffectEnabled="False"
-							        IsRimEffectEnabled="True">
-
-                    <gauge:CircularGauge.LayoutTransform>
-                        <TransformGroup>
-                            <ScaleTransform ScaleX="{Binding ElementName=scaleSlider, Path=Value}"
-										        ScaleY="{Binding ElementName=scaleSlider, Path=Value}" />
-                        </TransformGroup>
-                    </gauge:CircularGauge.LayoutTransform>
-
-                    <gauge:CircularGauge.Scales>
-                        <gauge:CircularScale Radius="85" StartAngle="135" SweepAngle="270" BarExtent="15"
-												         Background="Transparent">
-                            <gauge:CircularScale.TickSets>
-                                <gauge:CircularTickSet Minimum="-10" Maximum="10" MajorInterval="1" MinorInterval="0.5">
-                                    <gauge:CircularTickSet.Ranges>
-                                        <gauge:CircularRange Background="#FF00FBFF" BorderBrush="#FF5D63A1" BorderWidth="1"
-													        StartValue="0" EndValue="10" StartExtent="50" EndExtent="50"
-													        HasDropShadow="False" ScalePlacement="Inside" />
-                                    </gauge:CircularTickSet.Ranges>
-                                    <gauge:CircularTickSet.Ticks>
-                                        <gauge:CircularTickMarkMinor TickMarkExtent="7" TickMarkAscent="3"
-													        TickMarkType="RoundedRectangle"
-													        Background="{shared:LinearGradientBrush DarkGray, Gray, GradientType=RightToLeft}" />
-                                        <gauge:CircularTickMarkMajor TickMarkExtent="10" TickMarkAscent="3"
-													        TickMarkType="RoundedRectangle"
-													        Background="{shared:LinearGradientBrush Gray, Gray, GradientType=RightToLeft}" />
-                                        <gauge:CircularTickLabelMajor Foreground="#888888" FontSize="12" FontWeight="Bold"
-													        ScalePlacement="Outside" ScaleOffset="1" />
-                                    </gauge:CircularTickSet.Ticks>
-                                    <gauge:CircularTickSet.Pointers>
-                                        <gauge:CircularPointerNeedle x:Name="needle" NeedleType="Knob" PointerExtent="75"
-													        PointerAscent="10" CanDrag="True" Focusable="True"
-													        Background="{shared:LinearGradientBrush #666666, #AAAAAA, GradientType=LeftToRight, AdditionalStopCount=1}" />
-                                        <gauge:CircularPointerMarker MarkerType="Ellipse" PointerAscent="12" PointerExtent="12"
-													        Background="#AAAAAA" BorderBrush="#666666" BorderWidth="1" ScaleOffset="-17"
-													        HasDropShadow="False" IsHitTestVisible="False" DampeningMaximumDuration="0" DampeningMinimumDuration="0"
-													        Value="{Binding ElementName=needle, Path=DisplayValue}" />
-                                    </gauge:CircularTickSet.Pointers>
-                                </gauge:CircularTickSet>
-                            </gauge:CircularScale.TickSets>
-                        </gauge:CircularScale>
-                    </gauge:CircularGauge.Scales>
-
-                </gauge:CircularGauge>
-            </StackPanel>
-        </StackPanel>
+        <Slider Name="knob" Maximum="12" Minimum="0" Value="0">
+            <Slider.Template>
+                <ControlTemplate>
+                    <Viewbox>
+                        <Canvas Name="TextPartContainer" Width="300" Height="300" Margin="5">
+                            <Ellipse Name="Blue" Opacity="1" Stroke="Gray" StrokeThickness="1" Width="300" Height="300" Canvas.Left="0" Canvas.Top="0">
+                                <Ellipse.Fill>
+                                    <LinearGradientBrush>
+                                        <!--GradientStop Color="Yellow" Offset="0" /-->
+                                        <GradientStop Color="#FF5AB7E3" Offset="1" />
+                                        <GradientStop Color="#FFFFFFFF" Offset=".6" />
+                                        <GradientStop Color="#FF5AB7E3" Offset=".0" />
+                                    </LinearGradientBrush>
+                                </Ellipse.Fill>
+                            </Ellipse>
+                            <Ellipse Name="darkerBlue" Opacity="0.3" Stroke="Black" StrokeThickness="1" Width="300" Height="300" Canvas.Left="0" Canvas.Top="0">
+                                <Ellipse.Fill>
+                                    <RadialGradientBrush GradientOrigin="0,0" Center="0,0" RadiusX="0.5" RadiusY="0.5">
+                                        <!--GradientStop Color="Yellow" Offset="0" /-->
+                                        <GradientStop Color="#FFFFFFFF" Offset="0" />
+                                        <GradientStop Color="#FF000000" Offset="1" />
+                                    </RadialGradientBrush>
+                                </Ellipse.Fill>
+                            </Ellipse>
+                            
+                            <Ellipse Name="textpart" Opacity=".7" Width="270" Height="270" Canvas.Left="15" Canvas.Top="15" 
+                                    Stroke="#FF666666" StrokeThickness="10"
+                                    >
+                                <Ellipse.Fill>
+                                    <!--RadialGradientBrush GradientOrigin="0,0" Center="0.5,0.5" RadiusX="0.5" RadiusY="0.5">
+                                        <GradientStop Color="#FF5AC7E3" Offset="0" />
+                                        <GradientStop Color="#FF5AE7E3" Offset="0.55" />
+                                        <GradientStop Color="#FF909090" Offset="1" />
+                                    </RadialGradientBrush-->
+                                    <RadialGradientBrush GradientOrigin="0,0" Center="0.5,0.5" RadiusX="0.5" RadiusY="0.5">
+                                        <!--GradientStop Color="Yellow" Offset="0" /-->
+                                        <GradientStop Color="#FF666666" Offset="0" />
+                                        <GradientStop Color="#FF808080" Offset="0.55" />
+                                        <GradientStop Color="#FF555555" Offset="1" />
+                                    </RadialGradientBrush>
+                                </Ellipse.Fill>
+                            </Ellipse>
+                            <Ellipse Name="BlueMiddle" Stroke="Black" Opacity="0.7" StrokeThickness="1" Width="150" Height="150" Canvas.Left="75" Canvas.Top="75">
+                                <Ellipse.Fill>
+                                    <RadialGradientBrush GradientOrigin="0.5,0.5" Center="0.5,0.5">
+                                        <GradientStop Color="#FFFFFFFF" Offset="0" />
+                                        <GradientStop Color="#FF5AB7E3" Offset=".8" />
+                                    </RadialGradientBrush>
+                                </Ellipse.Fill>
+                            </Ellipse>
+                            <Ellipse Name="shadeBlueMiddle" Opacity="0.2" Width="150" Height="150" Canvas.Left="75" Canvas.Top="75">
+                                <Ellipse.Fill>
+                                    <RadialGradientBrush GradientOrigin="2,0" Center="2,0" RadiusX="2.4" RadiusY=".7">
+                                        <GradientStop Color="#FF5AB7E3" Offset="1" />
+                                        <GradientStop Color="#FF909090" Offset=".5" />
+                                    </RadialGradientBrush>
+                                </Ellipse.Fill>
+                            </Ellipse>
+                            <Ellipse Name="Overlay" Opacity=".0" Width="300" Height="300" Canvas.Left="0" Canvas.Top="0" 
+                                    Fill="Transparent" Stroke="#FF666666" StrokeThickness="10"
+                                    TouchDown="Ellipse_MouseLeftButtonDown"
+                                    TouchLeave="Ellipse_MouseMove"/>
+                            <!--TouchUp="Ellipse_MouseLeftButtonUp", TouchMove="Ellipse_MouseMove"-->
+                            <Canvas>
+                                <!-- wijzer schaduw-->
+                                <Ellipse Name="wijzerSchaduw" Opacity=".3" Fill="Gray" Canvas.Left="150" Canvas.Top="44" Width="10" Height="10" TouchUp="Ellipse_MouseLeftButtonUp"/>
+                                <Ellipse Opacity=".3" Fill="Gray" Canvas.Left="145" Canvas.Top="185" Width="20" Height="20" TouchUp="Ellipse_MouseLeftButtonUp"/>
+                                <Polygon Opacity=".3" Points="145,155,150,10,160,10,165,155" Fill="Gray" Width="300" Height="300" Canvas.Bottom="40" Canvas.Top="40"
+                                    TouchUp="Ellipse_MouseLeftButtonUp"/>
+                                <!--below not ticks-->
+                                <Polygon Opacity="0" Points="150,100,100,224,  115,230,125,233,140,235, 150,236, 160,235,175,233,185,230,  200,224" Fill="Black" Width="300" Height="300" Canvas.Bottom="40" Canvas.Top="40"
+                                     Stroke="Black"/>
+                                <Path Opacity="0" Stroke="Blue" StrokeThickness="1" Margin="23,16,16,36"  Data="M 15,100 A 100,50 0 1 0 200,100" />
+                                <!-- wijzer-->
+                                <Ellipse Opacity="1" Fill="WhiteSmoke" Canvas.Left="145" Canvas.Top="39" Width="10" Height="10" Stroke="White" TouchUp="Ellipse_MouseLeftButtonUp"/>
+                                <Ellipse Opacity="1" Fill="WhiteSmoke" Canvas.Left="140" Canvas.Top="180" Width="20" Height="20" Stroke="White" TouchUp="Ellipse_MouseLeftButtonUp"/>
+                                <Polygon Opacity="1" Points="140,150,145,5,155,5,160,150" Fill="WhiteSmoke" Width="300" Height="300" Canvas.Bottom="40" Canvas.Top="40"
+                                     Stroke="White" TouchUp="Ellipse_MouseLeftButtonUp"/>
+                                <Ellipse Opacity="1" Fill="WhiteSmoke" Canvas.Left="145" Canvas.Top="39" Width="10" Height="10" TouchUp="Ellipse_MouseLeftButtonUp"/>
+                                <Ellipse Opacity=".3" Fill="Gray" StrokeThickness="1" Stroke="#FF5AA7E3" Canvas.Left="135" Canvas.Top="135" Width="40" Height="40" TouchUp="Ellipse_MouseLeftButtonUp"/>
+                                <Ellipse Opacity="1" Fill="WhiteSmoke" Canvas.Left="140" Canvas.Top="180" Width="20" Height="20" TouchUp="Ellipse_MouseLeftButtonUp"/>
+                                <Path Opacity="0" Stroke="Black" StrokeThickness="1" Margin="23,16,16,36"  Data="M 15,100 A 100,50 0 1 0 200,100" />
+                                
+                                <!--Active part touch-->
+                                <Ellipse Name="Active" Fill="Transparent" Width="20" Height="20" Canvas.Left="140" Canvas.Top="35" 
+                                    TouchDown="Ellipse_MouseLeftButtonDown"
+                                    TouchLeave="Ellipse_MouseLeftButtonUp"
+                                    ><!-- TouchUp="Ellipse_MouseLeftButtonUp"-->
+                                    <Ellipse.ToolTip>
+                                        <ToolTip>
+                                            <Binding RelativeSource="{RelativeSource TemplatedParent}"
+                                                Path="Value" Converter="{StaticResource valueTextConverter}"/>
+                                        </ToolTip>
+                                    </Ellipse.ToolTip>
+                                </Ellipse>
+                                <Canvas.RenderTransform>
+                                    <RotateTransform CenterX="150" CenterY="150">
+                                        <RotateTransform.Angle>
+                                            <MultiBinding Converter="{StaticResource valueAngleConverter}">
+                                                <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Value"/>
+                                                <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Minimum"/>
+                                                <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Maximum"/>
+                                            </MultiBinding>
+                                        </RotateTransform.Angle>
+                                    </RotateTransform>
+                                </Canvas.RenderTransform>
+                            </Canvas>
+                            <!--white shine-->
+                            <Ellipse Opacity="1" IsHitTestVisible="False" StrokeThickness="1" Stroke="#FF5AA7E3" Canvas.Left="130" Canvas.Top="130" Width="40" Height="40" TouchUp="Ellipse_MouseLeftButtonUp">
+                                <Ellipse.Fill>
+                                    <RadialGradientBrush GradientOrigin="0.8,0.8" Center="0.5,0.5">
+                                        <GradientStop Color="White" Offset="0" />
+                                        <GradientStop Color="WhiteSmoke" Offset="0.1" />
+                                        <GradientStop Color="DarkGray" Offset="0.7" />
+                                        <GradientStop Color="Gray" Offset="1" />
+                                    </RadialGradientBrush>
+                                </Ellipse.Fill>
+                            </Ellipse>
+                            <Ellipse Opacity=".25" IsHitTestVisible="False" Width="130" Height="130" Canvas.Left="35"  Canvas.Top="25" >
+                                <Ellipse.Fill>
+                                    <LinearGradientBrush>
+                                        <GradientStop Color="White" Offset="1" />
+                                        <GradientStop Color="#FF808080" Offset="0" />
+                                    </LinearGradientBrush>
+                                </Ellipse.Fill>
+                            </Ellipse>
+                        </Canvas>
+                    </Viewbox>
+                </ControlTemplate>
+            </Slider.Template>
+        </Slider>
+        <Label x:Name="future1" Opacity=".4" IsHitTestVisible="False" Margin="30,80,0,0" Content="past" FontWeight="Bold" Background="{x:Null}" FontFamily="Arial" FontSize="13.333" Foreground="White" RenderTransformOrigin="0,0" HorizontalAlignment="Left" VerticalAlignment="Center">
+            <Label.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="-90"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Label.RenderTransform>
+        </Label>
+        <Label x:Name="present"  Opacity=".4" IsHitTestVisible="False" Width="150" Height="270" Margin="75,0,75,4" Content="present" FontWeight="Bold"  Background="{x:Null}" FontFamily="Arial" FontSize="13" Foreground="White" HorizontalContentAlignment="Center" RenderTransformOrigin="0,0" VerticalAlignment="Bottom" HorizontalAlignment="Center">
+            <Label.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="0"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Label.RenderTransform>
+        </Label>
+        <Label x:Name="future" Opacity=".4" IsHitTestVisible="False" Height="150" Width="50" Margin="0,100,-20,0" Content="future" FontWeight="Bold" Background="{x:Null}" FontFamily="Arial" FontSize="13.333" Foreground="White" RenderTransformOrigin="0,0" HorizontalAlignment="Right" VerticalAlignment="Center">
+            <Label.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="90"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Label.RenderTransform>
+        </Label>
+        <TextBlock x:Name="Headline1" IsHitTestVisible="False" Opacity=".4" Width="300" Height="60" Margin="0,0,0,0" Text="Timeline" TextWrapping="Wrap" FontFamily="Arial" FontSize="21.333" FontWeight="Bold" Foreground="#FFFEFCFC" TextAlignment="Center" VerticalAlignment="Bottom"/>
+        <TextBlock x:Name="Headline2" IsHitTestVisible="False" Opacity=".4" Width="300" Height="80" Margin="0,0,0,0" Text="Event" TextWrapping="Wrap" FontFamily="Arial" FontSize="21.333" FontWeight="Bold" Foreground="#FFFEFCFC" TextAlignment="Center"  VerticalAlignment="Bottom"/>
+        <TextBlock x:Name="Unit" IsHitTestVisible="False" Opacity=".4" FontFamily="Arial" FontSize="6" Foreground="#FFFEFCFC" Text="MONTHS" TextAlignment="Center" TextWrapping="Wrap" Margin="141,0,0,89" VerticalAlignment="Bottom"/>
     </Grid>
+
 </UserControl>
+
