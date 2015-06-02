@@ -64,6 +64,11 @@ namespace TabletopBillboardApplication
             mainButton.timeValueSelectedHandler += new MyUserControl.TimeValueSelectedEventHandler(mainButton_timeValueSelectedHandler);
             svi_MainButton.Content = mainButton;
 
+            //add custom user control
+            //MyUserControl uc = new MyUserControl();
+            //ScatterViewItem item = new ScatterViewItem();
+            //item.Content = uc;
+            //scatter.Items.Add(item);
         }
 
         private void setSize(List<EventData> events, DateTime today)
