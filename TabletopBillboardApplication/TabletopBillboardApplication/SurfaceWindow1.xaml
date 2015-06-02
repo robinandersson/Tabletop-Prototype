@@ -1,10 +1,33 @@
 ﻿<s:SurfaceWindow x:Class="TabletopBillboardApplication.SurfaceWindow1"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:s="http://schemas.microsoft.com/surface/2008"
+    xmlns:s="http://schemas.microsoft.com/surface/2008" 
     Title="TabletopBillboardApplication"
+    WindowState="Maximized"
+    WindowStyle="None"
     >
-  <Grid>
+    <!--xmlns:customUserControl="clr-namespace:TabletopBillboardApplication;assembly=TabletopBillboardApplication"-->
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="Resources/SlottskogenZoom.jpg"/>
+        </Grid.Background>
 
-  </Grid>
+        <s:TagVisualizer 
+            Name="MyTagVisualizer" 
+            VerticalAlignment="Stretch"
+            HorizontalAlignment="Stretch"
+            Background="Transparent" 
+            Height="Auto" Width="Auto"
+            VisualizationAdded="OnVisualizationAdded"
+            VisualizationRemoved="OnVisualizationRemoved"
+            >
+            
+        </s:TagVisualizer>
+  	    <Canvas x:Name="LineHost"/>
+        <s:ScatterView x:Name="scatter">
+            <s:ScatterViewItem Name="svi_MainButton" CanScale="False" Height="300" Width="300" Background="Transparent"/>
+        </s:ScatterView>
+
+    </Grid>
+    
 </s:SurfaceWindow>
